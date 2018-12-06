@@ -90,54 +90,5 @@
         <input type="reset" value="reset">
     </form>
 </div>
-
-<!--用户-->
-<div>
-    <h4>管理员登录 (已完成)</h4>
-    <form action="/admin/administrator" method="post">
-        <input name="id" type="text" value="1" disabled>
-        <input type="hidden" name="_method" value="DELETE">
-        {{csrf_field()}}
-        <input type="submit" value="删除用户">(已完成)
-    </form>
-    <hr>
-    <form action="/admin/checkLogin" method="post">
-        <p><input name="uname" type="text" placeholder="user"></p>
-        <p><input name="password" type="password"  placeholder="password"></p>
-        {{csrf_field()}}
-        <input type="submit" value="login">
-        <input type="reset" value="reset">
-    </form>
-</div>
-<div>
-    <h4>Admin用户更新 (已完成)</h4>
-    <form action="/admin/administrator" method="post">
-        <input type="hidden" name="_method" value="PUT">
-        <p><input name="id" type="text" value="2"></p>
-        <p><input name="uname" type="text" placeholder="admin"></p>
-        <p><input name="email" type="email" placeholder="email"></p>
-        <p><input name="phone" type="number" placeholder="phone"></p>
-        <p><input name="password" type="password"  placeholder="password"></p>
-        <p><input name="password_confirmation" type="password"  placeholder="repassword"></p>
-        {{csrf_field()}}
-        <input type="submit" value="edit">
-        <input type="reset" value="reset">
-    </form>
-</div>
-
-<div>
-    <h4>Admin用户注册 (已完成)</h4>
-    <a href="/admin/administrator/1" target="_blank">获取用户(已完成)</a>
-    <form action="/admin/administrator" method="post">
-        <p><input name="uname" type="text" placeholder="admin"></p>
-        {{--<p><input name="email" type="email" placeholder="email"></p>--}}
-        {{--<p><input name="phone" type="number" placeholder="phone"></p>--}}
-        <p><input name="password" type="password"  placeholder="password"></p>
-        <p><input name="password_confirmation" type="password"  placeholder="repassword"></p>
-        {{csrf_field()}}
-        <input type="submit" value="register">
-        <input type="reset" value="reset">
-    </form>
-</div>
 </body>
 </html>

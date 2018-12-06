@@ -72,6 +72,13 @@ EOF;
         return $users;
     }
 
+    /**
+     * 同时插入两个表
+     * 
+     * @param array $data
+     *
+     * @return bool
+     */
     public function insert(array $data)
     {
         echo '<pre>';print_r($data);

@@ -28,6 +28,7 @@ class CategoriesController extends Controller
         $list = $this->categoryService->showAdminCategory();
 
         echo json_encode($list);
+        return view('admin.category');
     }
 
     /**

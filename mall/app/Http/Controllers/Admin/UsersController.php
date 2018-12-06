@@ -15,17 +15,6 @@ class UsersController extends Controller
     }
 
     /**
-     * 管理员登陆
-     *
-     * @return mixed
-     */
-    public function login()
-    {
-        echo 'login';
-        return view('admin.login.home');
-    }
-
-    /**
      * 展示会员管理列表
      */
     public function show(int $id)
@@ -43,10 +32,9 @@ class UsersController extends Controller
      * phone
      * password
      *
-     *
      * @return mixed
      */
-    public function create(Request $request)
+    public function createUser(Request $request)
     {
         $this->validate($request, [
             'uname'    => 'required|min:3|max:18|unique:users,nickname',

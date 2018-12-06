@@ -24,4 +24,9 @@ class Admin extends AbstractUser
         echo 'I am admin->model';
     }
 
+    public function createAdministrator(array $data)
+    {
+        return 'hello world';
+    }
+
 }

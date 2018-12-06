@@ -19,6 +19,8 @@ class UserService
     {
         $this->customer = $customer;
         $this->admin    = $admin;
+        
+        date_default_timezone_set('PRC');
     }
 
     /**
@@ -37,6 +39,14 @@ class UserService
         $res = $this->admin->checkUser($uname);
 
         return $res;
+    }
+
+    public function createAdministrator(array $data)
+    {
+        $data['password'] = md5(bcrypt($data['password']));
+        $user = $this->admin->createAdministrator($data);
+
+        return $user;
     }
 
     /**
@@ -61,13 +71,13 @@ class UserService
      * 注册用户名
      *
      * 第一步：1.检测用户名，并指名用户类型
-    2.发送验证方式（手机/邮箱）
+              2.发送验证方式（手机/邮箱）
 
      * 第二步：1.显示用户名
-    2.密码
-    3.密码确认
-    4.手机/邮箱
-    5.登陆名
+              2.密码
+              3.密码确认
+              4.手机/邮箱
+              5.登陆名
      * 第三步：1.支付方式绑定
      */
     public function register(){}
