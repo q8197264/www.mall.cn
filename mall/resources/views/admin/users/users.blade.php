@@ -82,12 +82,12 @@
 
     <h5>编辑用户</h5>
     <form action="/admin/users" method="post">
-        <p><input name="cid" type="number" value="1" placeholder="cid"></p>
+        <p><input name="cid" type="number" value="46" placeholder="cid"></p>
         <p><input name="username" type="text"  placeholder="name"></p>
         <p><input name="email" type="email" placeholder="email"></p>
         <p><input name="phone" type="number" placeholder="phone"></p>
-        {{--<p><input name="password" type="password" placeholder="password"></p>--}}
-        {{--<p><input name="password_confirmation" type="password"  placeholder="repassword"></p>--}}
+        <p><input name="password" type="password" placeholder="password"></p>
+        <p><input name="password_confirmation" type="password"  placeholder="repassword"></p>
         <input type="hidden" name="_method" value="PUT">
         {{csrf_field()}}
         <input type="submit" value="edit">

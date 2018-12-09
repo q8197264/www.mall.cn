@@ -80,12 +80,12 @@ class UsersController extends Controller
     public function edit(Request $request)
     {
         $this->validate($request, [
-            'cid'       => 'required',
-            'username'  => 'required|min:3|max:18|unique:users,nickname',
-            'phone'     => 'required|unique:user_auths,identifier|phone',
-            'email'     => 'required|unique:user_auths,identifier|email',
-            'password'  => 'required|min:5|max:18|confirmed',
-            'password_confirmation' => 'required|min:5|max:18',
+            'cid'       => 'required|numeric',
+//            'username'  => 'required|min:3|max:18',
+//            'phone'     => 'required|numeric|min:10|max:11',
+//            'email'     => 'required|email',
+//            'password'  => 'required|min:5|max:18|confirmed',
+//            'password_confirmation' => 'required|min:5|max:18',
         ]);
         $cid   = $request->input('cid');
         $uname = $request->input('username');
@@ -94,7 +94,6 @@ class UsersController extends Controller
         $password = $request->input('password');
         $data = compact('cid','email','phone','uname','password');
         print_r($data);
-        exit();
         echo 'edit';
     }
 

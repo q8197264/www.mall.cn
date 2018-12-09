@@ -32,7 +32,6 @@ class AdministratorController extends Controller
      */
     public function login()
     {
-        echo 'admin login...';
         return view('admin.administrator');
     }
 
@@ -95,7 +94,7 @@ class AdministratorController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-            'uname'    => 'required|min:3|max:18|unique:users,nickname',
+            'uname'    => 'required|min:3|max:18|unique:admin_users,uname',
             'password' => 'required|min:5|max:18|confirmed',
             'password_confirmation' => 'required|min:5|max:18',
         ]);
