@@ -19,13 +19,31 @@ class UserService
     {
         $this->customer = $customer;
         $this->admin    = $admin;
-        
-        date_default_timezone_set('PRC');
+    }
+
+    public function show(int $id)
+    {
+        echo 'show user list...';
+        $info = $this->admin->show($id);
+        return $info;
+    }
+
+    public function getUserList(int $offset, int $limit)
+    {
+        $list = $this->admin->getUserList($offset, $limit);
+
+        return $list;
+    }
+
+    public function softDelete($uid)
+    {
+        return 'soft delete uid';
     }
 
     /**
-     * 检测用户名
-     *
+     * 第一步：1.检测用户名，并指名用户类型
+              2.发送验证方式（手机/邮箱）
+
      * @param $uname
      *
      * @return mixed
@@ -36,35 +54,9 @@ class UserService
         //2.验证参数
         //3.判断帐号类型
         //4.getUser
-        $res = $this->admin->checkUser($uname);
+        $res = $this->customer->checkUser($uname);
 
         return $res;
-    }
-
-    public function createAdministrator(array $data)
-    {
-        $data['password'] = md5(bcrypt($data['password']));
-        $user = $this->admin->createAdministrator($data);
-
-        return $user;
-    }
-
-    /**
-     * 后台创建用户
-     *
-     * @param array $info
-     *
-     * @return mixed
-     */
-    public function createUser(array $data)
-    {
-        //1. 判重
-        //3. 判断帐号类型
-        //4. 入库
-        $data['password'] = md5(bcrypt($data['password']));
-        $user = $this->admin->createUser($data);
-
-        return $user;
     }
 
     /**
@@ -73,15 +65,19 @@ class UserService
      * 第一步：1.检测用户名，并指名用户类型
               2.发送验证方式（手机/邮箱）
 
-     * 第二步：1.显示用户名
+     * 第二步：1.显示上一步的用户名
               2.密码
               3.密码确认
               4.手机/邮箱
               5.登陆名
      * 第三步：1.支付方式绑定
      */
-    public function register(){}
+    public function register(array $data)
+    {
+        $user = $this->customer->register($data);
 
+        return $user;
+    }
 
 
     /**

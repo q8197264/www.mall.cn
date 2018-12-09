@@ -54,7 +54,7 @@ class AdministratorService
         return $b;
     }
 
-    public function list(int $offset, int $limit)
+    public function listing(int $offset, int $limit)
     {
         return $this->administratorRepository->queryAdministratorList($offset, $limit);
     }

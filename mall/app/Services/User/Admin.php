@@ -18,15 +18,23 @@ class Admin extends AbstractUser
         return static::getUserRespository()->queryUserById(['uid'=>$uid]);
     }
 
-    public function show()
+    public function show(int $uid)
     {
-        // TODO: Implement show() method.
-        echo 'I am admin->model';
+        return static::show($uid);
     }
 
-    public function createAdministrator(array $data)
+    /**
+     * 用户列表
+     *
+     * @param int $offset
+     * @param int $limit
+     *
+     * @return mixed
+     */
+    public function getUserList(int $offset, int $limit)
     {
-        return 'hello world';
-    }
+        $list = $this->getUserRespository()->queryUsersList($offset, $limit);
 
+        return $list;
+    }
 }

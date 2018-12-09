@@ -44,7 +44,7 @@ EOF;
 
     public function queryAdministratorList(int $offset, int $limit)
     {
-        echo $sql = <<<EOF
+        $sql = <<<EOF
             SELECT
                 `id`,
                 `uname`,

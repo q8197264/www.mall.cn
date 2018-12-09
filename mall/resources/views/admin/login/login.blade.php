@@ -65,31 +65,6 @@
     </style>
 </head>
 <body style="margin-left: 25%">
-<div>
-    <h5>分类</h5>
-    <form action="/admin/categories" method="post">
-        <input name="pid" type="number" placeholder="pid">
-        <input name="name" type="text" placeholder="name">
-        {{csrf_field()}}
-        <input type="submit" value="add">
-        <input type="reset" value="reset">
-    </form>
-    <form action="/admin/categories" method="post">
-        <input name="cid" type="number" placeholder="cid">
-        <input name="name" type="text"  placeholder="name">
-        <input type="hidden" name="_method" value="PUT">
-        {{csrf_field()}}
-        <input type="submit" value="edit">
-        <input type="reset" value="reset">
-    </form>
-    <form action="/admin/categories" method="post">
-        <input name="cid" type="number" placeholder="cid">
-        <input type="hidden" name="_method" value="DELETE">
-        {{csrf_field()}}
-        <input type="submit" value="del">
-        <input type="reset" value="reset">
-    </form>
-</div>
 
 <!--用户-->
 <div>

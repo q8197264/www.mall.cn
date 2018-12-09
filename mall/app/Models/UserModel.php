@@ -32,10 +32,11 @@ class UserModel
     {
         $where  = '';
         foreach ($wheres as $k=>$v) {
-            $where .= '`'.$k.'`="'.$v.'"';
+            $where .= ' `'.$k.'`="'.$v.'" AND';
         }
+        $where = trim($where, 'AND');
         $sql = <<<EOF
-            SELECT `uid`,`identity_type`,`credential` FROM `{$this->user_auths}` WHERE {$where} 
+            SELECT `uid`,`grant_type`,`credential` FROM `{$this->user_auths}` WHERE {$where} 
 EOF;
         $res = $this->slave->select($sql);
 
@@ -65,47 +66,71 @@ EOF;
         return $res;
     }
 
-    public function getAllUser()
+    public function queryUsersList(int $offset, int $limit)
     {
-        $users = $this->slave->select('select * from users where id = ?', [1]);
-        //        return $this->user->all();
+        echo $sql = <<<EOF
+            SELECT
+                *
+            FROM
+                `user_auths`
+            WHERE `uid` IN (
+                    SELECT
+                        `id`
+                    FROM
+                        `users`
+                    WHERE
+                        `id` >= (
+                            SELECT
+                                `id`
+                            FROM
+                                `users`
+                            ORDER BY
+                                `id`
+                            LIMIT ?,1
+                        )
+                )
+            GROUP BY `id` 
+            LIMIT ?
+EOF;
+        exit('--');
+        $users = $this->slave->select($sql, [$offset, $limit]);
+
         return $users;
     }
 
     /**
-     * 同时插入两个表
-     * 
+     * 事务同时插入两个表
+     *
      * @param array $data
      *
      * @return bool
      */
     public function insert(array $data)
     {
-        echo '<pre>';print_r($data);
-
-        $sql = <<<EOF
-            INSERT INTO `{$this->users}`(
-                ``,``,`` 
-            )VALUE(?,?)
-EOF;
-        $sql2 = <<<EOF
-            INSERT INTO `{$this->user_auths}`(
-                `uid`,`identity_type`,`identifier`,`credential` 
-            )VALUE(?,?,?,?)
-EOF;
-        $this->master->insertGetId($sql, [time()]);
-        echo $sql, $sql2;
-        exit('xx');
+        DB::connection()->enableQueryLog();
         try {
-            DB::transaction(function ()use($sql, $sql2) {
-                $data = $this->master->insert($sql, [time()]);
-                $this->master->insert($sql2, [$data['uid'], '', '', '']);
+            $b = DB::transaction(function () use ($data) {
+                $uid = $this->master->table($this->users)
+                    ->insertGetId([
+                            'nickname'  =>'',
+                            'created_at'=>date('Y-m-d H:i:s',time()),
+                            'type'      =>0
+                    ]);
+                $b = $this->master->table($this->user_auths)
+                    ->insertGetId([
+                            'uid'          => $uid,
+                            'grant_type'   => $data['grant_type'],
+                            'identifier'   => $data['identifier'],
+                            'credential'   => $data['credential'],
+                            'created_at'   => date('Y-m-d H:i:s',time())
+                    ]);
+                return $b;
             }, 5);
-        } catch (\Throwable $e) {
-            echo $e->getMessage();
+        }catch(\Throwable $e) {
+            $b = $e->getCode();
         }
 
-        return true;
+        return $b;
     }
 
 

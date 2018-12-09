@@ -36,9 +36,15 @@ class AdministratorController extends Controller
         return view('admin.administrator');
     }
 
-    public function list(int $offset, int $limit)
+    /**
+     * 展示列表
+     *
+     * @param int $offset
+     * @param int $limit
+     */
+    public function listing(int $offset, int $limit)
     {
-        $list = $this->administratorService->list($offset, $limit);
+        $list = $this->administratorService->listing($offset, $limit);
         echo '<pre>';print_r($list);
     }
 

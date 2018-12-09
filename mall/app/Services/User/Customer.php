@@ -15,14 +15,26 @@ class Customer extends AbstractUser
 
     public function show()
     {
-        echo (__METHOD__)."\n";
-        // TODO: Implement show() method.
         $users = static::getUserRespository()->getAllUsers();
         foreach($users as $user) {
             foreach ($user as $k=>$v) {
                 yield json_encode(array($k=>$v));
             }
         }
+    }
+
+    /**
+     * 用户注册
+     *
+     * @param array $data
+     *
+     * @return mixed
+     */
+    public function register(array $data)
+    {
+        $data['password'] = md5(bcrypt($data['password']));
+
+        return $this->getUserRespository()->register($data);
     }
 
     public function getAllUsers()

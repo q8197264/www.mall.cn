@@ -16,9 +16,9 @@ class UserRepository extends AbstractRepository
     protected $userModel;
 
     protected static $map = [
-        'uname'     => 'identifier',
-        'password'  => 'credential',
-        'app_type'   => 'identifier_type'
+        'user'     => 'identifier',
+        'password' => 'credential',
+        'www'      => 'grant_type'//www email phone uname
     ];
 
     public function __construct(UserModel $userModel)
@@ -29,9 +29,25 @@ class UserRepository extends AbstractRepository
 //        return response()->json($user);
     }
 
+    /**
+     * 字段映射
+     *
+     * @param array $data
+     *
+     * @return array
+     */
     protected function mapFields(array $data)
     {
+        if (!isset($data['user'])) {
+            return $data;
+        }
         $res = [];
+        $user = self::checkUserName($data['user']);
+        $data['grant_type'] = $data['grant_type']??'www';
+        if ($data['grant_type']==='www') {
+            $data['grant_type'] = key($user);
+        }
+        $data['user']     = current($user);
         foreach ($data as $k=>$v) {
             if (isset(self::$map[$k])) {
                 $res[self::$map[$k]] = $v;
@@ -39,24 +55,28 @@ class UserRepository extends AbstractRepository
                 $res[$k] = $v;
             }
         }
-//        echo '<pre>';print_r($res);
-//        print_r(array_flip(self::$map));
         $res = array_intersect_key($res, array_flip(self::$map));
-//        print_r($res);
 
         return $res;
     }
 
-    public function createUser(array $data)
+    /**
+     * 注册用户
+     *
+     * @param array $data
+     *
+     * @return bool|string
+     */
+    public function register(array $data)
     {
+        $uid = '';
         $data = $this->mapFields($data);
-        $user = $this->queryUserByName($data['identifier']);
+        $user = $this->queryUserByName($data['identifier'], $data['grant_type']);
         if (empty($user)) {
-            $b = $this->userModel->insert($data);
+            $uid = $this->userModel->insert($data);
         }
-        exit('test');
 
-        return $b;
+        return $uid;
     }
 
     public function getUser()
@@ -65,11 +85,13 @@ class UserRepository extends AbstractRepository
     }
 
     /**
+     * 查询用户列表
+     *
      * @return Collection|User[]
      */
-    public function getAllUsers()
+    public function queryUsersList(int $offset, int $limit)
     {
-        return $this->userModel->getAllUser();
+        return $this->userModel->queryUsersList($offset, $limit);
     }
 
     /**
@@ -79,14 +101,21 @@ class UserRepository extends AbstractRepository
      *
      * @return mixed
      */
-    public function queryUserByName($uname)
+    public function queryUserByName(string $uname, string $grant_type='')
     {
-        $data = $this->mapFields(['uname' => $uname]);
+        $where = $this->mapFields(['identifier' => $uname, 'grant_type'=>$grant_type]);
 
-        return $this->userModel->queryUserByIndex($data);
+        return $this->userModel->queryUserByIndex($where);
     }
 
-    public function queryUserById($id)
+    /**
+     *
+     *
+     * @param int $id
+     *
+     * @return mixed
+     */
+    public function queryUserById(int $id)
     {
         return $this->userModel->queryUserByIndex(['id'=>$id]);
     }

@@ -14,14 +14,31 @@ class UsersController extends Controller
         $this->userService = $userService;
     }
 
-    /**
-     * 展示会员管理列表
-     */
-    public function show(int $id)
+    public function page()
     {
-        $info = $this->userService->checkUser($id);
+        return view('admin.users.users');
+    }
 
-        echo json_encode($info);
+    /**
+     * 展示用户信息
+     */
+    public function show(Request $request)
+    {
+        $uid  = $request->input('uid');
+        $list = $this->userService->show($uid);
+
+        echo json_encode($list);
+    }
+
+    /**
+     * 数据库未完
+     * 展示用户列表
+     */
+    public function listing(int $offset, int $limit)
+    {
+        $list = $this->userService->getUserList($offset, $limit);
+
+        echo json_encode($list);
     }
 
     /**
@@ -34,42 +51,63 @@ class UsersController extends Controller
      *
      * @return mixed
      */
-    public function createUser(Request $request)
+    public function register(Request $request)
     {
         $this->validate($request, [
             'uname'    => 'required|min:3|max:18|unique:users,nickname',
             'password' => 'required|min:5|max:18|confirmed',
             'password_confirmation' => 'required|min:5|max:18',
         ]);
-        $uname      = $request->input('uname');
+        $user      = $request->input('uname');
         $password   = $request->input('password');
         $repassword = $request->input('password_confirmation');
         if (strcasecmp($password, $repassword) !=0 ) {
             exit('fail');
         }
+        $data = compact('user','password');
+//        $data['grant_type'] = 'weibo';//weixin webo www qq
 
-        $data = compact('uname','password');
-        $data['identifier_type'] = 'www';//weixin webo www qq
+        $b = $this->userService->register($data);
 
-        $this->userService->createUser($data);
-
-        //return redirect('/login');
-        return view('admin.users.add');
+        echo $b;
     }
 
-    //更改用户信息
+    /**
+     * 更改用户信息
+     *
+     * @param Request $request
+     */
     public function edit(Request $request)
     {
         $this->validate($request, [
-//            'uname' => 'required|min:3|max:18|unique:users,nickname',
-            'phone'=>'required|unique:users,phone|phone',
-            'email' => 'required|unique:users,email|email',
-            'password' => 'required|min:5|max:18|confirmed',
+            'cid'       => 'required',
+            'username'  => 'required|min:3|max:18|unique:users,nickname',
+            'phone'     => 'required|unique:user_auths,identifier|phone',
+            'email'     => 'required|unique:user_auths,identifier|email',
+            'password'  => 'required|min:5|max:18|confirmed',
             'password_confirmation' => 'required|min:5|max:18',
         ]);
-        //$email = $request->input('email');
-        //$phone = $request->input('phone');
-        compact('uname','password','repassword');
+        $cid   = $request->input('cid');
+        $uname = $request->input('username');
+        $phone = $request->input('phone');
+        $email = $request->input('email');
+        $password = $request->input('password');
+        $data = compact('cid','email','phone','uname','password');
+        print_r($data);
+        exit();
         echo 'edit';
+    }
+
+    /**
+     * 删除
+     *
+     * @param Request $request
+     */
+    public function delete(Request $request)
+    {
+        $uid = $request->input('uid');
+        $b = $this->userService->softDelete($uid);
+
+        echo $b;
     }
 }

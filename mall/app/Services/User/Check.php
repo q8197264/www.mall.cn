@@ -1,14 +1,13 @@
 <?php
-namespace App\Repositories;
+namespace App\Services\User;
 
 /**
- * Repositories 接口.
- *
+ * 帐号检测类.
  * User: liuxiaoquan
- * Date: 2018-11-23
- * Time: 17:04
+ * Date: 2018-12-07
+ * Time: 18:43
  */
-class AbstractRepository
+class Check
 {
     /**
      * 检测是否符合用户格式
@@ -19,8 +18,8 @@ class AbstractRepository
      */
     public static function isUsername($argv)
     {
-        $regEx = '/^\w{3,20}$/';//英文
-//        $regEx = '/^[a-zA-Z\x{4e00}-\x{9fa5}]{3,20}$/u'; //中英文
+        $regEx = '/^\w{3,16}$/';
+
         return preg_match($regEx, $argv) ? $argv : false;
     }
 
@@ -36,26 +35,24 @@ class AbstractRepository
         return preg_match($regEx, $argv) ? $argv : false;
     }
 
-    public static function checkUserName(string $name)
+    public static function checkName(string $name)
     {
-        $data = [];
         switch ($name) {
             case self::isMobile($name):
                 $type = 'phone';
                 break;
             case self::isUsername($name):
-                $type = 'username';
+                $type = 'uname';
                 break;
             case self::isMail($name):
                 $type = 'email';
                 break;
             default:
-        }
-        if (isset($type)) {
-            $data = array($type=>$name);
+                $type = '格式错误';
+                break;
         }
 
-        return $data;
+        return array($type=>$name);
     }
 
     public static function isNickname(){}
