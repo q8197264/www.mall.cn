@@ -91,6 +91,7 @@ class UsersController extends Controller
         $uname = $request->input('username');
         $phone = $request->input('phone');
         $email = $request->input('email');
+        exit('xx');
         $password = $request->input('password');
         $data = compact('cid','email','phone','uname','password');
         print_r($data);
