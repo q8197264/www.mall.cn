@@ -44,9 +44,20 @@ EOF;
     }
 
 
-    public function updateUserAt($id, array $data)
+    public function updateUserAt(int $id, array $where) :bool
     {
+        $fields = '';
+        foreach ($where as $k=>$v) {
+            $fields .= "`{$k}` = {$v},";
+        }
+        $fields = trim($fields, ',');
+        echo $sql = <<<EOF
+            UPDATE `{$this->user_auths}` SET {$fields} WHERE `uid`=? 
+EOF;
+        exit;
+        $b = $this->master->update($sql, [$id]);
 
+        return $b;
     }
     
     //
@@ -132,6 +143,5 @@ EOF;
 
         return $b;
     }
-
 
 }

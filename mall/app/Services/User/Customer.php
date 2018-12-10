@@ -4,7 +4,7 @@ namespace App\Services\User;
 use App\Services\User;
 
 /**
- * Created by PhpStorm.
+ * 消息者.
  * User: liuxiaoquan
  * Date: 2018-11-23
  * Time: 14:24
@@ -37,17 +37,18 @@ class Customer extends AbstractUser
         return $this->getUserRespository()->register($data);
     }
 
-    public function getAllUsers()
-    {
-        $users = static::getUserRespository()->getAllUsers();
-        foreach($users as $user) {
-            print_r($user->uname);
-        }
-    }
-
+    /**
+     *
+     * @return mixed
+     */
     public function getUser()
     {
         $users = static::getUserRespository()->getUser();
         return $users;
+    }
+
+    public function edit(int $uid, array $where)
+    {
+        return static::getUserRespository()->updateUserById($uid, $where);
     }
 }

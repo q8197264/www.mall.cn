@@ -34,9 +34,9 @@ class UsersController extends Controller
      * 数据库未完
      * 展示用户列表
      */
-    public function listing(int $offset, int $limit)
+    public function list(int $offset, int $limit)
     {
-        $list = $this->userService->getUserList($offset, $limit);
+        $list = $this->userService->list($offset, $limit);
 
         echo json_encode($list);
     }
@@ -58,7 +58,7 @@ class UsersController extends Controller
             'password' => 'required|min:5|max:18|confirmed',
             'password_confirmation' => 'required|min:5|max:18',
         ]);
-        $user      = $request->input('uname');
+        $user       = $request->input('uname');
         $password   = $request->input('password');
         $repassword = $request->input('password_confirmation');
         if (strcasecmp($password, $repassword) !=0 ) {
@@ -80,22 +80,26 @@ class UsersController extends Controller
     public function edit(Request $request)
     {
         $this->validate($request, [
-            'cid'       => 'required|numeric',
-//            'username'  => 'required|min:3|max:18',
-//            'phone'     => 'required|numeric|min:10|max:11',
-//            'email'     => 'required|email',
-//            'password'  => 'required|min:5|max:18|confirmed',
-//            'password_confirmation' => 'required|min:5|max:18',
+            'id'        => 'required|numeric',
+            'username'  => 'min:3|max:18',
+//            'phone'     => 'numeric|min:11',
+            'email'     => 'email',
+            'password'  => 'required|min:5|max:18|confirmed',
+            'password_confirmation' => 'required|alpha_dash|min:5|max:18',
         ]);
-        $cid   = $request->input('cid');
-        $uname = $request->input('username');
-        $phone = $request->input('phone');
-        $email = $request->input('email');
-        exit('xx');
-        $password = $request->input('password');
-        $data = compact('cid','email','phone','uname','password');
-        print_r($data);
-        echo 'edit';
+        $uid        = $request->input('id');
+        $username   = $request->input('username');
+        $phone      = $request->input('phone');
+        $email      = $request->input('email');
+        $password   = $request->input('password');
+        $repassword = $request->input('password_confirmation');
+        if (strcasecmp($password, $repassword) != 0) {
+            $b =  '密码错误';
+        }
+        $where = compact('uid','username','phone','email','password');
+        $b = $this->userService->edit($uid, $where);
+
+        echo 'edit:'.$b;
     }
 
     /**

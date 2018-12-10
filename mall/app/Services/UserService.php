@@ -28,7 +28,7 @@ class UserService
         return $info;
     }
 
-    public function getUserList(int $offset, int $limit)
+    public function list(int $offset, int $limit)
     {
         $list = $this->admin->getUserList($offset, $limit);
 
@@ -48,7 +48,7 @@ class UserService
      *
      * @return mixed
      */
-    public function checkUser($uname)
+    public function check($uname)
     {
         //1.频率控制（重复请求丢弃） md5->redis setnx
         //2.验证参数
@@ -79,13 +79,18 @@ class UserService
         return $user;
     }
 
+    public function edit(int $uid, array $where)
+    {
+        return $this->customer->edit($uid, $where);
+    }
+
 
     /**
      * 展示个人信息
      *
      * @return \Generator
      */
-    public function showUserInfo(int $id)
+    public function info(int $id)
     {
         $all = $this->customer->show($id);
         foreach ($all as $v) {
@@ -94,14 +99,5 @@ class UserService
         
         return $all;
     }
-
-    /**
-     *
-     */
-    public function getUsersList()
-    {
-        $this->customer->getAllUsers();
-    }
-
 
 }

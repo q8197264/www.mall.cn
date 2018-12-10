@@ -20,7 +20,7 @@ route::delete('admin/category/{cid?}', 'CategoriesController@delete')->name('cat
 //用户管理
 route::get('admin/users/', 'UsersController@page')->name('users.page');
 route::get('admin/users/{id?}', 'UsersController@show')->name('users.show');
-route::get('admin/users/{id?}/{li?}', 'UsersController@listing')->name('users.listing');
+route::get('admin/users/{id?}/{li?}', 'UsersController@list')->name('users.listing');
 route::post('admin/users', 'UsersController@register')->name('users.register');
 route::put('admin/users', 'UsersController@edit')->name('users.edit');
 route::delete('admin/users', 'UsersController@delete')->name('users.delete');
