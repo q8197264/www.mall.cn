@@ -35,9 +35,9 @@ class UserService
         return $list;
     }
 
-    public function softDelete($uid)
+    public function softDelete(int $uid)
     {
-        return 'soft delete uid';
+        return $this->admin->softDelete($uid);
     }
 
     /**

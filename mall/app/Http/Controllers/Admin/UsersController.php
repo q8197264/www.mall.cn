@@ -14,11 +14,6 @@ class UsersController extends Controller
         $this->userService = $userService;
     }
 
-    public function page()
-    {
-        return view('admin.users.users');
-    }
-
     /**
      * 展示用户信息
      */
@@ -34,11 +29,12 @@ class UsersController extends Controller
      * 数据库未完
      * 展示用户列表
      */
-    public function list(int $offset, int $limit)
+    public function list(int $offset=0, int $limit=10)
     {
         $list = $this->userService->list($offset, $limit);
 
         echo json_encode($list);
+        return view('admin.users.users');
     }
 
     /**
@@ -79,6 +75,7 @@ class UsersController extends Controller
      */
     public function edit(Request $request)
     {
+        echo '<pre>';
         $this->validate($request, [
             'id'        => 'required|numeric',
             'username'  => 'min:3|max:18',
@@ -95,11 +92,12 @@ class UsersController extends Controller
         $repassword = $request->input('password_confirmation');
         if (strcasecmp($password, $repassword) != 0) {
             $b =  '密码错误';
+        } else {
+            $where = compact('uid','username','phone','email','password');
+            $b = $this->userService->edit($uid, $where);
         }
-        $where = compact('uid','username','phone','email','password');
-        $b = $this->userService->edit($uid, $where);
 
-        echo 'edit:'.$b;
+        echo $b;
     }
 
     /**
@@ -109,7 +107,7 @@ class UsersController extends Controller
      */
     public function delete(Request $request)
     {
-        $uid = $request->input('uid');
+        $uid = $request->input('id');
         $b = $this->userService->softDelete($uid);
 
         echo $b;

@@ -44,18 +44,27 @@ EOF;
     }
 
 
-    public function updateUserAt(int $id, array $where) :bool
+    public function updateUserAt(int $uid, array $where) :bool
     {
-        $fields = '';
-        foreach ($where as $k=>$v) {
-            $fields .= "`{$k}` = {$v},";
-        }
-        $fields = trim($fields, ',');
-        echo $sql = <<<EOF
-            UPDATE `{$this->user_auths}` SET {$fields} WHERE `uid`=? 
+        //使用先select 后update or insert
+        $sql = <<<EOF
+            REPLACE INTO `{$this->user_auths}` (
+                `uid`,
+                `grant_type`,
+                `identifier`,
+                `credential`,
+                `created_at`
+            ) VALUE (
+                ?,?,?,?,?
+            )
 EOF;
-        exit;
-        $b = $this->master->update($sql, [$id]);
+        $b = $this->master->insert($sql, [
+            $uid,
+            $where['grant_type'],
+            $where['identifier'],
+            $where['credential'],
+            date('Y-m-d H:i:s', time())
+        ]);
 
         return $b;
     }
@@ -79,16 +88,16 @@ EOF;
 
     public function queryUsersList(int $offset, int $limit)
     {
-        echo $sql = <<<EOF
+        $sql = <<<EOF
             SELECT
-                *
+                `id`,`uid`,`grant_type`,`identifier`,`credential`,`created_at` 
             FROM
-                `user_auths`
+                `{$this->user_auths}`
             WHERE `uid` IN (
                     SELECT
                         `id`
                     FROM
-                        `users`
+                        `{$this->users}`
                     WHERE
                         `id` >= (
                             SELECT
@@ -98,12 +107,12 @@ EOF;
                             ORDER BY
                                 `id`
                             LIMIT ?,1
-                        )
-                )
-            GROUP BY `id` 
+                        ) 
+                        AND `off`=0
+                ) AND `unbind`=0 
+            GROUP BY `uid` 
             LIMIT ?
 EOF;
-        exit('--');
         $users = $this->slave->select($sql, [$offset, $limit]);
 
         return $users;
@@ -118,30 +127,48 @@ EOF;
      */
     public function insert(array $data)
     {
-        DB::connection()->enableQueryLog();
+//        DB::connection()->enableQueryLog();
+        $this->b=false;
         try {
-            $b = DB::transaction(function () use ($data) {
+            $this->b = DB::transaction(function () use ($data) {
                 $uid = $this->master->table($this->users)
                     ->insertGetId([
                             'nickname'  =>'',
                             'created_at'=>date('Y-m-d H:i:s',time()),
                             'type'      =>0
                     ]);
-                $b = $this->master->table($this->user_auths)
-                    ->insertGetId([
-                            'uid'          => $uid,
-                            'grant_type'   => $data['grant_type'],
-                            'identifier'   => $data['identifier'],
-                            'credential'   => $data['credential'],
-                            'created_at'   => date('Y-m-d H:i:s',time())
-                    ]);
-                return $b;
+            $this->b = $this->master->table($this->user_auths)
+                ->insertGetId([
+                        'uid'          => $uid,
+                        'grant_type'   => $data['grant_type'],
+                        'identifier'   => $data['identifier'],
+                        'credential'   => $data['credential'],
+                        'created_at'   => date('Y-m-d H:i:s',time())
+                ]);
             }, 5);
         }catch(\Throwable $e) {
-            $b = $e->getCode();
+            $this->b = $e->getCode();
         }
 
-        return $b;
+        return $this->b;
+    }
+
+    public function softDelete(int $uid):bool
+    {
+        $this->b=false;
+        try{
+            DB::transaction(function ()use ($uid) {
+                $this->b=$this->master->table($this->users)
+                    ->where(['id'=>$uid])
+                    ->update(['off'=>1]);
+                $this->b=$this->master->table($this->user_auths)
+                    ->where(['uid'=>$uid])
+                    ->update(['unbind'=>1]);
+            }, 5);
+        }catch(\Throwable $e){
+            $this->b = $e->getCode();
+        }
+        return $this->b;
     }
 
 }

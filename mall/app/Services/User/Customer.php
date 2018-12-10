@@ -47,6 +47,14 @@ class Customer extends AbstractUser
         return $users;
     }
 
+    /**
+     * 编辑
+     *
+     * @param int   $uid
+     * @param array $where
+     *
+     * @return mixed
+     */
     public function edit(int $uid, array $where)
     {
         return static::getUserRespository()->updateUserById($uid, $where);

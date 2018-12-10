@@ -18,9 +18,29 @@ route::put('admin/category', 'CategoriesController@edit')->name('category.edit')
 route::delete('admin/category/{cid?}', 'CategoriesController@delete')->name('category.delete');
 
 //用户管理
-route::get('admin/users/', 'UsersController@page')->name('users.page');
+route::get('admin/users/{id?}/{li?}', 'UsersController@list')->name('users.list');
 route::get('admin/users/{id?}', 'UsersController@show')->name('users.show');
-route::get('admin/users/{id?}/{li?}', 'UsersController@list')->name('users.listing');
 route::post('admin/users', 'UsersController@register')->name('users.register');
 route::put('admin/users', 'UsersController@edit')->name('users.edit');
 route::delete('admin/users', 'UsersController@delete')->name('users.delete');
+
+//商品管理
+route::get('admin/goods/{id?}/{li?}', 'GoodsController@list')->name('goods.list');
+route::get('admin/goods/{id?}', 'GoodsController@show')->name('goods.show');
+route::post('admin/goods', 'GoodsController@register')->name('goods.register');
+route::put('admin/goods', 'GoodsController@edit')->name('goods.edit');
+route::delete('admin/goods', 'GoodsController@delete')->name('goods.delete');
+
+//订单管理
+route::get('admin/orders/{id?}/{li?}', 'OrdersController@list')->name('orders.list');
+route::get('admin/orders/{id?}', 'OrdersController@show')->name('orders.show');
+route::post('admin/orders', 'OrdersController@register')->name('orders.register');
+route::put('admin/orders', 'OrdersController@edit')->name('orders.edit');
+route::delete('admin/orders', 'OrdersController@delete')->name('orders.delete');
+
+//购物车管理
+route::get('www/carts/{id?}/{li?}', 'CartsController@list')->name('carts.list');
+route::get('www/carts/{id?}', 'CartsController@show')->name('carts.show');
+route::post('www/carts', 'CartsController@register')->name('carts.register');
+route::put('www/carts', 'CartsController@edit')->name('carts.edit');
+route::delete('www/carts', 'CartsController@delete')->name('carts.delete');

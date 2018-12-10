@@ -4,12 +4,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>用户模块</title>
-
+    <title>admin.goods</title>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
-
     <!-- Styles -->
     <style>
         html, body {
@@ -65,41 +62,41 @@
     </style>
 </head>
 <body style="margin-left: 25%">
+
+<!--用户-->
 <div>
-    <h5>用户列表(已完成)</h5>
-
-    <h5>添加用户(已完成)</h5>
-    <form action="/admin/users" method="post">
-        <p><input name="uname" type="text" placeholder="user"></p>
-        <p><input name="email" type="email" placeholder="email"></p>
-        <p><input name="phone" type="number" placeholder="phone"></p>
-        <p><input name="password" type="password"  placeholder="password"></p>
-        <p><input name="password_confirmation" type="password"  placeholder="repassword"></p>
+    <h4>删除商品</h4>
+    <form action="/admin/goods" method="post">
+        <input name="id" type="text" value="1" disabled>
+        <input type="hidden" name="_method" value="DELETE">
         {{csrf_field()}}
-        <input type="submit" value="register">
-        <input type="reset" value="reset">
+        <input type="submit" value="删除用户">(已完成)
     </form>
-
-    <h5>编辑用户(已完成)</h5>
-    <form action="/admin/users" method="post">
-        <p><input name="id" type="number" value="46" placeholder="cid"></p>
-        <p><input name="username" type="text"  placeholder="name"></p>
+</div>
+<div>
+    <h4>添加商品</h4>
+    <form action="/admin/goods" method="post">
+        <p><input name="id" type="text" value="2"></p>
+        <p><input name="uname" type="text" placeholder="admin"></p>
         <p><input name="email" type="email" placeholder="email"></p>
         <p><input name="phone" type="number" placeholder="phone"></p>
-        <p><input name="password" type="password" placeholder="password"></p>
-        <p><input name="password_confirmation" type="password"  placeholder="repassword"></p>
-        <input type="hidden" name="_method" value="PUT">
         {{csrf_field()}}
         <input type="submit" value="edit">
         <input type="reset" value="reset">
     </form>
+</div>
 
-    <h5>删除用户(已完成)</h5>
-    <form action="/admin/users" method="post">
-        <input name="id" type="text" value="1">
-        <input type="hidden" name="_method" value="DELETE">
+<div>
+    <h4>更新商品</h4>
+    <a href="/admin/goods" target="_blank">获取用户(已完成)</a>
+    <form action="/admin/administrator" method="post">
+        <input type="hidden" name="_method" value="PUT">
+        <p><input name="uname" type="text" placeholder="admin"></p>
+        <p><input name="password" type="password"  placeholder="password"></p>
+        <p><input name="password_confirmation" type="password"  placeholder="repassword"></p>
         {{csrf_field()}}
-        <input type="submit" value="删除用户">
+        <input type="submit" value="update">
+        <input type="reset" value="reset">
     </form>
 </div>
 </body>

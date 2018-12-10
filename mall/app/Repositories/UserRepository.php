@@ -44,7 +44,6 @@ class UserRepository extends AbstractRepository
     protected function mapFields(array $data):array
     {
         $res = [];
-        $data['grant_type'] = $data['grant_type']??'www';
 
         //拆解同一用户不同登陆帐号：分别写入DB
         $data = array_filter($data);
@@ -52,19 +51,16 @@ class UserRepository extends AbstractRepository
             $fill = array_diff_key($data, array_flip(['username','phone','email']));
             foreach (['username','phone','email'] as $v) {
                 if (isset($data[$v])) {
-//                    $res['']
-                    if ($data['grant_type'] === 'www') {
-                        $data['grant_type'] = $v;
-                    }
-                    $res[$v] = array_merge($fill, array($v=>$data[$v]));
+                    $res[$v] = array_merge($fill, array('user'=>$data[$v]));
+                    $res[$v] = $this->mapFields($res[$v]);
                 }
-
             }
             return $res;
         }
 
         //自动检测帐户类型：并从DB读取对应用户
         $user = self::checkUserName($data['user']);
+        $data['grant_type'] = $data['grant_type']??'www';
         if ($data['grant_type'] === 'www') {
             $data['grant_type'] = key($user);
         }
@@ -150,13 +146,17 @@ class UserRepository extends AbstractRepository
     public function updateUserById(int $uid, array $where)
     {
         $where = $this->mapFields($where);
-echo '<pre>';
+
         //每种帐号一row记录
         foreach ($where as $v) {
-            print_r($this->mapFields($v));
             $b = $this->userModel->updateUserAt($uid, $v);
         }
-        exit("\n".__METHOD__);
+
         return $b;
+    }
+
+    public function softDelete(int $uid)
+    {
+        return $this->userModel->softDelete($uid);
     }
 }

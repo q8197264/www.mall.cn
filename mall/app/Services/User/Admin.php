@@ -37,4 +37,9 @@ class Admin extends AbstractUser
 
         return $list;
     }
+
+    public function softDelete(int $uid)
+    {
+        return $this->getUserRespository()->softDelete($uid);
+    }
 }
