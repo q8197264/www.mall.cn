@@ -160,12 +160,12 @@ EOF;
                             SELECT
                                 `id`
                             FROM
-                                `users`
+                                `{$this->users}`
                             ORDER BY
                                 `id`
                             LIMIT ?,1
                         ) 
-                        AND `off`=0
+                        AND `state`=0
                 ) AND `unbind`=0 
             GROUP BY `uid` 
             LIMIT ?
@@ -229,7 +229,7 @@ EOF;
             DB::transaction(function ()use ($uid) {
                 $this->b=$this->master->table($this->users)
                     ->where(['id'=>$uid])
-                    ->update(['off'=>1]);
+                    ->update(['state'=>1]);
                 $this->b=$this->master->table($this->user_auths)
                     ->where(['uid'=>$uid])
                     ->update(['unbind'=>1]);

@@ -62,6 +62,14 @@ return [
             'region' => env('AWS_DEFAULT_REGION'),
             'bucket' => env('AWS_BUCKET'),
         ],
+        'qiniu' => [
+            'driver' => 'qiniu',
+            'key' => env('QINIU_ACCESS_KEY'),
+            'secret' => env('QINIU_SECRET_KEY'),
+            'region' => env('QINIU_DEFAULT_REGION'),
+            'bucket' => env('QINIU_BUCKET'),
+            'url' => env('QINIU_URL')
+        ],
 
     ],
 

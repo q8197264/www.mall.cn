@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
  */
 class AddressModel
 {
-    protected $address = 'address';
+    protected $address = 'user_address';
 
     protected $master;
     protected $slave;
@@ -126,7 +126,8 @@ EOF;
             'province'=>$parameters['province'],
             'city'=>$parameters['city'],
             'district'=>$parameters['district'],
-            'address'=>$parameters['address']
+            'address'=>$parameters['address'],
+            'selected'=>$parameters['selected'],
         ]);
 
         return $id;

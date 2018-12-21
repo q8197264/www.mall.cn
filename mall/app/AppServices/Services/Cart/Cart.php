@@ -14,7 +14,9 @@ class Cart extends AbstractCart
 
     public function findCartList(int $uid)
     {
-        return $this->getCartRespository()->getCartList($uid);
+        $list = $this->getCartRespository()->getCartList($uid);
+
+        return $list;
     }
 
     /**

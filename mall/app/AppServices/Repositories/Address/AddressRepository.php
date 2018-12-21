@@ -57,6 +57,10 @@ class AddressRepository
      */
     public function add(array $parameters): int
     {
+        $row = $this->getDefaultByUid($parameters['user_id']);
+        if (empty($row)) {
+            $parameters['selected'] = 1;
+        }
         $id = $this->addressModel->add($parameters);
 
         return $id;

@@ -2,7 +2,8 @@
 namespace App\AppServices\Services\Order;
 
 
-use mysql_xdevapi\Exception;
+use App\Events\OrderPaid;
+use Exception;
 
 /**
  * Created by PhpStorm.
@@ -37,6 +38,12 @@ class Order extends AbstractOrder
         //insert order_info
         //insert order_item
         $goods = $this->cartService->findListBySelected($user_id);
+
+        //add to order table
+        $this->getOrderRepository()->add();
+
+        //send message
+        event(new OrderPaid());
 
         dd($info,$goods);
     }

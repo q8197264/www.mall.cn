@@ -63,7 +63,7 @@ class RegisterController extends Controller
 
     /**
      * Create a new user instance after a valid registration.
-     * 注册用户
+     * 注册成功
      * @param  array  $data
      * @return \App\User
      */

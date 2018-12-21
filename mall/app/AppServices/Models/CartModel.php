@@ -43,11 +43,12 @@ class CartModel
                 c.`add_price`,
                 c.`spu_numbers`,
                 c.`status`,
+                c.`selected`,
                 u.`sku_no`,
                 u.`sku_name`,
                 u.`price`,
                 u.`stock`,
-                u.`images` 
+                u.`images`  
             FROM
                 `{$this->carts}` c
                 LEFT JOIN `{$this->goods_sku}` u ON c.`spu_id` = u.`spu_id` 

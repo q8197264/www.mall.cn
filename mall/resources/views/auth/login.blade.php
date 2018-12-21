@@ -5,9 +5,9 @@
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
 
-                @if (empty(session('user_id')))
+                @if (empty(session('user_id')) && empty($res['msg']))
                 <div class="panel panel-default">
-                    <div class="panel-heading">@if (empty(session('user_id')))Login@else {{$errors['username']}} @endif</div>
+                    <div class="panel-heading">@if (empty(session('user_id'))) Login @else {{$res['username']}} @endif</div>
                     <div class="panel-body">
                         <form class="form-horizontal" method="POST" action="{{ route('login') }}">
                             {{ csrf_field() }}
@@ -83,7 +83,7 @@
                 @else
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            {{$errors['msg']}}
+                            {{$res['msg']}}
                         </div>
                     </div>
                 @endif

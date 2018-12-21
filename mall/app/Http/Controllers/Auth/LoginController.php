@@ -61,6 +61,7 @@ class LoginController extends Controller
         if (!empty(session('user_id'))) {
             return redirect('/home');
         }
+
         return view('auth.login');
     }
 
@@ -96,7 +97,7 @@ class LoginController extends Controller
                 break;
         }
 
-        return view('auth.login',['errors'=>$userdata]);
+        return view('auth.login',['res'=>$userdata]);
     }
 
     public function logout(Request $request)

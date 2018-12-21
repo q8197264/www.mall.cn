@@ -14,7 +14,9 @@
                                 商品名：{{ $row->sku_name }}
                             </div>
                             <div style="float:left">
-                                <input type="checkbox" name="cart_id[]" id="{{$row->cart_id}}" value="{{$row->cart_id}}" onclick="check(this)">
+                                <input type="checkbox" name="cart_id[]" id="{{$row->cart_id}}"
+                                       value="{{$row->cart_id}}" onclick="check(this)"
+                                       @if($row->selected) checked="checked" @endif>
                             </div>
                             <div style="float:left">
                                 <img width="100" src="{{ $row->images }}">
