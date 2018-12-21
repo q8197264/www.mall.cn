@@ -1,2 +1,2 @@
 <?php
-phpinfo();
+require('mall/public/index.php');

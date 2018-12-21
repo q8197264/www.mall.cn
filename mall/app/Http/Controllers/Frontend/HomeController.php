@@ -2,7 +2,8 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use App\Services\UserService;
+use App\AppServices\Services\GoodsService;
+use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\UserProvider;
 
 /**
@@ -15,21 +16,21 @@ class HomeController extends Controller
 {
     protected $userService;
 
-    public function __construct(UserService $userService)
+    public function __construct(GoodsService $goodsService)
     {
-        $this->userService = $userService;
+        $this->goodsService = $goodsService;
+//        $this->middleware('auth');//web
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        echo '<pre>';
-        echo __METHOD__,"\n";
-        $this->userService->getAllUsers();
-//        return view('frontend/index',compact('title','list','info','email'));
-//        return view('users.login');
+        $list = $this->goodsService->list(0);
+
 //        \View::addExtension('html','php');
 //        echo view()->file(public_path().'/frontend/index.html');
+        //echo json_encode($list);
+        return view('frontend.home', ['data'=>$list]);
     }
 
-    
+
 }

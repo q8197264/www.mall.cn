@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use App\Services\UserService;
+use App\AppServices\Services\UserService;
 use App\Http\Controllers\Controller;
 
 class UsersController extends Controller
@@ -17,9 +17,8 @@ class UsersController extends Controller
     /**
      * 展示用户信息
      */
-    public function show(Request $request)
+    public function show(int $uid=0)
     {
-        $uid  = $request->input('uid');
         $list = $this->userService->show($uid);
 
         echo json_encode($list);
@@ -29,9 +28,9 @@ class UsersController extends Controller
      * 数据库未完
      * 展示用户列表
      */
-    public function list(int $offset=0, int $limit=10)
+    public function list(int $offset=0)
     {
-        $list = $this->userService->list($offset, $limit);
+        $list = $this->userService->list($offset, 10);
 
         echo json_encode($list);
         return view('admin.users.users');

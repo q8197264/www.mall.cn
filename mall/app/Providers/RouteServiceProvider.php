@@ -38,16 +38,16 @@ class RouteServiceProvider extends ServiceProvider
         $this->mapApiRoutes();
 
         //custom frontend route
-        $sld_prefix = isset($_SERVER['REQUEST_URI']) ?
-            explode('/',trim($_SERVER['REQUEST_URI'],'/'))[0] :
-            config('app.frontend');
-        if(config('app.admin') == $sld_prefix){
-            $this->mapAdminRoutes();
-        } elseif (config('app.frontend') == $sld_prefix){
-            $this->mapFrontendRoutes();
-        } else {
+//        $sld_prefix = isset($_SERVER['REQUEST_URI']) ?
+//            explode('/',trim($_SERVER['REQUEST_URI'],'/'))[0] :
+//            config('app.frontend');
+//        if(config('app.admin') == $sld_prefix){
+//            $this->mapAdminRoutes();
+//        } elseif (config('app.frontend') == $sld_prefix){
+//            $this->mapFrontendRoutes();
+//        } else {
             $this->mapWebRoutes();
-        }
+//        }
     }
 
     /**
@@ -79,10 +79,6 @@ class RouteServiceProvider extends ServiceProvider
              ->group(base_path('routes/api.php'));
     }
 
-
-    /*
-     *
-     */
     protected function mapFrontendRoutes()
     {
         Route::middleware('web')

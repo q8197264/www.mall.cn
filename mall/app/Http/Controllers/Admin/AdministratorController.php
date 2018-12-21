@@ -1,16 +1,17 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
-use App\Services\AdministratorService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\AppServices\Services\AdministratorService;
 
 /**
  * 系统管理员模块.
  *
-   1. 登陆
-   2. 注册
-   3. 管理员信息
+ * 1. 登陆
+ * 2. 注册
+ * 3. 管理员信息
  *
  * User: liuxiaoquan
  * Date: 2018-12-06
@@ -30,8 +31,10 @@ class AdministratorController extends Controller
      *
      * @return mixed
      */
-    public function login()
+    public function login(Request $request)
     {
+        $res = $request->session()->get('user_id');
+        var_dump('user id:', $res);
         return view('admin.administrator');
     }
 
@@ -41,10 +44,11 @@ class AdministratorController extends Controller
      * @param int $offset
      * @param int $limit
      */
-    public function listing(int $offset, int $limit)
+    public function list(int $offset = 0)
     {
-        $list = $this->administratorService->listing($offset, $limit);
-        echo '<pre>';print_r($list);
+        $list = $this->administratorService->list($offset, 10);
+        echo '<pre>';
+        print_r($list);
     }
 
     /**
@@ -56,20 +60,27 @@ class AdministratorController extends Controller
     {
         $uname    = $request->input('uname');
         $password = $request->input('password');
-        $b = $this->administratorService->checkLogin($uname, $password);
-        switch ($b) {
+        $data     = $this->administratorService->checkLogin($uname, $password);
+        switch ($data['code']) {
             case 0:
-                $b = 'success';
+                $data['msg'] = 'success';
+                $request->session()->put('user_id', $data['uid']);
                 break;
             case 1:
-                $b = 'non data';
+                $data['msg'] = 'user no exists';
                 break;
             case 2:
-                $b = 'fail';
+                $data['msg'] = 'password fail';
                 break;
         }
 
-        echo $b;
+        echo $data['msg'];
+    }
+
+    public function logOut(Request $request)
+    {
+//        $request->session()->forget('user_id');
+//        return redirect('admin/login');
     }
 
     /**
@@ -77,10 +88,10 @@ class AdministratorController extends Controller
      *
      * @param int $id
      */
-    public function show(int $id)
+    public function show(int $id = 0)
     {
         $info = $this->administratorService->show($id);
-        
+
         echo json_encode($info);
     }
 
@@ -91,25 +102,23 @@ class AdministratorController extends Controller
      *
      * @return mixed
      */
-    public function create(Request $request)
+    public function register(Request $request)
     {
         $this->validate($request, [
-            'uname'    => 'required|min:3|max:18|unique:admin_users,uname',
-            'password' => 'required|min:5|max:18|confirmed',
+            'uname'                 => 'required|min:3|max:18|unique:admin_users,uname',
+            'password'              => 'required|min:5|max:18|confirmed',
             'password_confirmation' => 'required|min:5|max:18',
         ]);
         $uname      = $request->input('uname');
         $password   = $request->input('password');
         $repassword = $request->input('password_confirmation');
-        if (strcasecmp($password, $repassword) !=0 ) {
+        if (strcasecmp($password, $repassword) != 0) {
             exit('fail');
+        } else {
+            $this->administratorService->register($uname, $password);
         }
 
-        $data = compact('uname','password');
-
-        $this->administratorService->add($data);
-
-        return view('admin.users.add');
+        return view('admin.users.users');
     }
 
     /**
@@ -120,7 +129,7 @@ class AdministratorController extends Controller
     public function delete(Request $request)
     {
         $id = $request->input('id');
-        $b = $this->administratorService->delete($id);
+        $b  = $this->administratorService->delete($id);
         echo $b;
     }
 
@@ -131,13 +140,13 @@ class AdministratorController extends Controller
      */
     public function edit(Request $request)
     {
-        $this->validate($request,[
+        $this->validate($request, [
 //            'id'                    => 'required',
 //            'uname'                 =>'required|min:3|max:18|unique:admin_users,uname',
 //            'email'                 =>'email|unique:admin_users',
 //            'phone'                 =>'required|numeric|min:10|max:11',
-            'password'              =>'required|min:5|max:18|confirmed',
-            'password_confirmation' =>'required|min:5|max:18'
+'password'              => 'required|min:5|max:18|confirmed',
+'password_confirmation' => 'required|min:5|max:18'
         ]);
 
         $id         = $request->input('id');
@@ -148,16 +157,17 @@ class AdministratorController extends Controller
         $repassword = $request->input('password_confirmation');
         echo '<pre>';
         if (strcasecmp($password, $repassword) === 0) {
-            $data = compact('id','uname','email','phone','password');
-            $b = $this->administratorService->edit($data);
+            $data = compact('id', 'uname', 'email', 'phone', 'password');
+            $b    = $this->administratorService->edit($data);
         } else {
             $b = '密码不一致';
         }
 
-        echo ($b);
+        echo($b);
     }
 
     public function updatePassword()
-    {}
-    
+    {
+    }
+
 }

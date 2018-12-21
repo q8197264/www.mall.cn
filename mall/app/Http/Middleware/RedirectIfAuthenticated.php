@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Middleware;
 
 use Closure;
@@ -17,8 +16,21 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
+        // 获取当前认证用户...
+        //$user = Auth::user();
+        // 获取当前认证用户的ID...
+        //   $id = Auth::id();
+
         if (Auth::guard($guard)->check()) {
-            return redirect('/home');
+            //
+            switch ($guard) {
+                case 'admin':
+                    return redirect('/admin');
+                    break;
+                default:
+                    return redirect('/home');
+                    break;
+            }
         }
 
         return $next($request);

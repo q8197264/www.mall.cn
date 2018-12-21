@@ -4,29 +4,70 @@ namespace App\Http\Controllers\Frontend;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Services\OrderService;
+use App\AppServices\Services\OrderService;
+use App\AppServices\Services\AddressService;
+use App\AppServices\Services\CartService;
 
 class OrdersController extends Controller
 {
-    private $orderservice;
+    private $orderService;
+    private $addressService;
+    private $cartService;
 
-    public function __construct(OrderService $orderService)
+    public function __construct(
+                                OrderService $orderService,
+                                AddressService $addressService,
+                                CartService $cartService
+    )
     {
-        $this->orderservice = $orderService;
+        $this->orderService   = $orderService;
+        $this->addressService = $addressService;
+        $this->cartService    = $cartService;
     }
 
-    public function show(int $id)
+    /**
+     * @param int $id
+     *
+     * @return view
+     */
+    public function show()
     {
-        echo 'order';
+        $user_id = session('user_id');
+        if (empty($user_id)) {
+            return redirect('/login');
+        }
+
+        //get user address
+        $address = $this->addressService->findListByUid($user_id);
+        //-pay id
+        //-shipping
+
+        $res = [];
+        //get cart goods list
+        $res = $this->cartService->findListBySelected($user_id);
+        //-invoice
+
+        return view('frontend.order.order', ['address'=>$address, 'data'=>$res]);
     }
 
-    public function store(Request $request)
+    /**
+     * create order
+     *
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function create(Request $request)
     {
-        $qty = $request->input('qty');
+        $user_id = session('user_id');
+        if (empty($user_id)) {
+            return redirect('/login');
+        }
 
-        $discount = $this->orderservice->getDiscount($qty);
-        $total    = $this->orderservice->getTotal($qty, $discount);
+        //pay way from page
+        //shipping way from page
+        $bool = $this->orderService->create($user_id);
 
-        echo $total;
+        return $bool;
     }
 }

@@ -5,14 +5,14 @@ namespace App\Http\Controllers\Frontend;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\UserService;
-use App\Services\EmailService;
+use App\Services\NotifyService;
 
 class UsersController extends Controller
 {
     private $userService;
     private $emailService;
 
-    public function __construct(UserService $userService, EmailService $emailService)
+    public function __construct(UserService $userService, NotifyService $emailService)
     {
         $this->userService = $userService;
         $this->emailService = $emailService;

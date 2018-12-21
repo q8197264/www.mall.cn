@@ -2,72 +2,54 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use App\Services\CategoryService;
+use App\AppServices\Services\CategoryService;
 use App\Http\Controllers\Controller;
 
 /**
- * 后台导分类导航类.
- * User: liuxiaoquan
- * Date: 2018-12-03
- * Time: 11:36
+ * 分类管理.
+ *
+ * User: sai
+ * Date: 2018-12-11
+ * Time: 15:05
  */
 class CategoriesController extends Controller
 {
     private $categoryService;
 
-    public function __construct(CategoryService $CategoryService)
+    public function __construct(CategoryService $categoryService)
     {
-        $this->categoryService = $CategoryService;
+        $this->categoryService = $categoryService;
     }
 
-    /**
-     * 展示分类导航列表
-     */
     public function show()
     {
-        $list = $this->categoryService->showAdminCategory();
+        $category = $this->categoryService->show();
 
-        echo json_encode($list);
-        return view('admin.category.category');
+        echo json_encode($category);
+        return view('admin.category.category', ['data'=>$category]);
     }
 
-    /**
-     * 添加分类
-     *
-     * @param Request $request
-     */
     public function add(Request $request)
     {
-        $pid = $request->input('pid');
-        $cname = $request->input('name');
+        $cname = $request->input('cname');
+        $tid   = $request->input('tid');
 
-        $bool = $this->categoryService->addAdminCategory($pid, $cname);
-
-        echo $bool;
+        echo $this->categoryService->add($tid, $cname);
     }
 
-
-    public function delete(Request $request)
+    public function del(Request $request)
     {
-        $cid = $request->input('cid');
+        $id = $request->input('id');
 
-        $bool = $this->categoryService->delAdminCategory($cid);
-
-        echo $bool;
+        echo $this->categoryService->del($id);
     }
 
-    /**
-     * 更新分类
-     *
-     * @param Request $request
-     */
     public function edit(Request $request)
     {
-        $cid = $request->input('cid');
-        $name = $request->input('name');
+        $id    = $request->input('id');
+        $tid   = $request->input('tid');
+        $cname = $request->input('cname');
 
-        $bool = $this->categoryService->editAdminCategory($cid, $name);
-
-        echo $bool;
+        echo $this->categoryService->edit($id, $tid, $cname);
     }
 }

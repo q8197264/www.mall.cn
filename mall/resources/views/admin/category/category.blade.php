@@ -66,24 +66,32 @@
 </head>
 <body style="margin-left: 25%">
 <div>
-    <h5>分类</h5>
-    <form action="/admin/categories" method="post">
-        <input name="pid" type="number" placeholder="pid">
-        <input name="name" type="text" placeholder="name">
+    <table>
+        @foreach ($data as $val)
+        <tr>
+            <td>{{ $val['id'] }} {{ $val['type_id'] }} {{ $val['category_name'] }}</td>
+        </tr>
+        @endforeach
+    </table>
+    <h5>商品分类</h5>
+    <form action="/admin/category" method="post">
+        <input name="tid" type="number" placeholder="tid">
+        <input name="cname" type="text" placeholder="cname">
         {{csrf_field()}}
         <input type="submit" value="add">
         <input type="reset" value="reset">
     </form>
-    <form action="/admin/categories" method="post">
-        <input name="cid" type="number" placeholder="cid">
-        <input name="name" type="text"  placeholder="name">
+    <form action="/admin/category" method="post">
+        <input name="id" type="number" placeholder="id">
+        <input name="tid" type="number" placeholder="tid">
+        <input name="cname" type="text"  placeholder="cname">
         <input type="hidden" name="_method" value="PUT">
         {{csrf_field()}}
         <input type="submit" value="edit">
         <input type="reset" value="reset">
     </form>
-    <form action="/admin/categories" method="post">
-        <input name="cid" type="number" placeholder="cid">
+    <form action="/admin/category" method="post">
+        <input name="id" type="number" placeholder="id">
         <input type="hidden" name="_method" value="DELETE">
         {{csrf_field()}}
         <input type="submit" value="del">
