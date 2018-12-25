@@ -185,4 +185,20 @@ EOF;
 
         return $bool;
     }
+
+    /**
+     * bath del goods selected
+     *
+     * @param int $user_id
+     *
+     * @return mixed
+     */
+    public function delBySelected(int $user_id)
+    {
+        $sql = <<<EOF
+            DELETE FROM `{$this->carts}` WHERE `user_id`=? AND `selected`=1
+EOF;
+        $bool = $this->master->delete($sql, [$user_id]);
+        return $bool;
+    }
 }

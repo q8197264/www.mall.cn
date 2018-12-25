@@ -14,7 +14,8 @@
 <!--用户-->
 <table border="1">
     <h4>展示商品 (已完成)</h4>
-    <tr><td>商品ID</td><td>商品名</td><td>标签</td><td>价格/编号</td><td>SKU库存</td><td>上下架</td><td>操作</td></tr>
+    <tr><td>商品ID</td><td>商品名</td><td>标签</td><td>价格/编号</td>
+        <td>SKU库存</td><td>上下架</td><td>操作</td></tr>
 @foreach ($data as $v)
     <tr>
         <td rowspan="3">{{$v->id}}</td>
@@ -26,7 +27,7 @@
             {{$v->low_price}}
         </td>
         <td rowspan="3">sku</td>
-        <td rowspan="3">{{$v->sale}}</td>
+        <td rowspan="3"></td>
         <td rowspan="3">
             <form action="admin/goods" method="post">
                 <input type="hidden" name="_method" value="PUT">
@@ -36,7 +37,7 @@
                 <input type="hidden" name="_method" value="DELETE">
                 <input type="submit" value="del">
             </form>
-            <a href="/admin/goods/{{$v->id}}" target="_blank">show</a>
+            <a href="/admin/goods/{{$v->id}}/show" target="_blank">show</a>
         </td>
     </tr>
     <tr><td>分类{{$v->category_id}}</td><td></td><td></td></tr>
@@ -89,7 +90,10 @@
         <p>内容:<input name="description" type="text" placeholder="描述"></p>
         <p>套餐:<input name="sku_name" type="text" placeholder="官方标配"></p>
         <p>价格:<input name="lprice" type="number"  placeholder="low_price"></p>
-        <p>店铺:<input name="shopid" type="number"  placeholder="店铺"></p>
+        <p>店铺:<select name="shopid">
+                <option value="1">韩衣舍</option>
+                <option value="2">金坷垃</option>
+            </select>
         <p>库存:<input name="stock" type="number"  placeholder="库存"></p>
         {{csrf_field()}}
         <input type="submit" value="add">

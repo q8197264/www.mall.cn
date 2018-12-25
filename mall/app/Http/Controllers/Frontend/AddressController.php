@@ -77,10 +77,9 @@ class AddressController
      *
      * @return bool
      */
-    public function setDefault(Request $request)
+    public function setDefault(int $id)
     {
         $user_id = $this->checkLogin();
-        $id = $request->intput('id');
         $bool = false;
         if (isset($user_id)) {
             $bool = $this->addressService->setDefault($id, $user_id);
@@ -115,7 +114,7 @@ class AddressController
      *
      * @param Request $request
      */
-    public function delete(Request $request)
+    public function del(Request $request)
     {
         $user_id = $this->checkLogin();
         $id = $request->input('id');

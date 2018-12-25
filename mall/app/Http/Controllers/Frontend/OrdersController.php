@@ -30,7 +30,7 @@ class OrdersController extends Controller
      *
      * @return view
      */
-    public function show()
+    public function detail()
     {
         $user_id = session('user_id');
         if (empty($user_id)) {
@@ -47,8 +47,9 @@ class OrdersController extends Controller
         $res = $this->cartService->findListBySelected($user_id);
         //-invoice
 
-        return view('frontend.order.order', ['address'=>$address, 'data'=>$res]);
+        return view('frontend.order.detail', ['address'=>$address, 'data'=>$res]);
     }
+
 
     /**
      * create order
@@ -57,17 +58,18 @@ class OrdersController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function create(Request $request)
+    public function create()
     {
         $user_id = session('user_id');
+
         if (empty($user_id)) {
             return redirect('/login');
         }
 
         //pay way from page
         //shipping way from page
-        $bool = $this->orderService->create($user_id);
+        $data = $this->orderService->create($user_id);
 
-        return $bool;
+        return view('frontend.order.end',['data'=>$data]);
     }
 }

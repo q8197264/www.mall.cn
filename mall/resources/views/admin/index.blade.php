@@ -10,12 +10,12 @@
                         You are logged in admin dashboard!
                         <hr>
                         <div>
-                            <a href="/admin/users/list">go users click here</a><hr>
-                            <a href="/admin/goods/list">go goods click here</a><hr>
+                            <a href="/admin/users">go users click here</a><hr>
+                            <a href="/admin/goods">go goods click here</a><hr>
                             <a href="/admin/report">go report click here</a><hr>
                             <a href="/admin/navigate">go navigate click here</a><hr>
                             <a href="/admin/category">go category click here</a><hr>
-                            <a href="/admin/administrator/list">go administrator click here</a>
+                            <a href="/admin/administrator">go administrator click here</a>
                         </div>
                     </div>
                 </div>

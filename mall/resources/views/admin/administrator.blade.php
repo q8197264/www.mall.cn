@@ -102,7 +102,7 @@
 
 <div>
     <h4>Admin用户注册 (已完成)</h4>
-    <a href="/admin/administrator/1" target="_blank">获取用户(已完成)</a>
+    <a href="/admin/administrator/1/show" target="_blank">获取用户(已完成)</a>
     <form action="/admin/administrator" method="post">
         <p><input name="uname" type="text" placeholder="admin"></p>
         {{--<p><input name="email" type="email" placeholder="email"></p>--}}

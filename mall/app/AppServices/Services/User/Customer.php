@@ -50,7 +50,9 @@ class Customer extends AbstractUser
      */
     public function register(array $data):int
     {
-        $data['password'] = $this->encrypt($data['password']);
+        if (isset($data['grant_type']) && $data['grant_type']=='www') {
+            $data['password'] = $this->encrypt($data['password']);
+        }
         $uid = $this->getUserRespository()->register($data);
 
         return $uid;
@@ -72,7 +74,7 @@ class Customer extends AbstractUser
     /**
      * 查询用户名
      *
-     * @param string $uname
+     * @param string $uname/$openid
      *
      * @return mixed
      */
@@ -80,11 +82,11 @@ class Customer extends AbstractUser
     {
         $info = static::getUserRespository()->queryUserByFactory($uname, $grant_type);
         if (empty($info)) {
-            throw new Exception('Row is null');
+            return [];
         }
+
         if (in_array($info['grant_type'], ['phone','email','username'])) {
             if ( !password_verify($password, $info['credential']) ) {
-//                dd('password fail',$info['credential'], password_verify($password, $info['credential']));
                 throw new Exception('password fail');
             }
         }

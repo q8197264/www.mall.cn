@@ -22,11 +22,19 @@
     "autoload": {
         "classmap": [
             "database/seeds",
-            "database/factories"
+            "database/factories",
+            "app/AppServices"
         ],
         "psr-4": {
-            "App\\": "app/"
-        }
+            "App\\": "app/",
+            "Libraries\\": "app/AppServices/Libraries",
+            "Services\\": "app/AppServices/Services",
+            "Repositories\\": "app/AppServices/Repositories",
+            "Models\\": "app/AppServices/Models"
+        },
+        "files": [
+            "app/AppServices/Helper/qiniu.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

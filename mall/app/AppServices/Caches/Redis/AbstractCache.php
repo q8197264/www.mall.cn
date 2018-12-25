@@ -61,7 +61,6 @@ class AbstractCache
     public function __construct()
     {
         $this->driver();
-//        echo '<pre>';print_r($data);
     }
 
     function redis_version($info)

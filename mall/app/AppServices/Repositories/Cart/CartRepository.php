@@ -26,21 +26,33 @@ class CartRepository
     {
         $cartList = $this->cartModel->getCartList($uid, $selected);
         $sku_ids = array_column($cartList, 'sku_id');
+
+        $res = [];
         if (!empty($sku_ids)) {
             $specs = $this->goodsModel->getSpecBySkuid($sku_ids);
-            $res = [];
+
+            //不同规格，同sku_id分为一组
+
             foreach ($specs as $row) {
                 $res[$row->sku_id][] = $row;
             }
 
+            //同sku_id规格对应到同商品sku_id
             foreach ($sku_ids as $index=>$sku_id) {
                 if (isset($res[$sku_id]) && ($cartList[$index]->sku_id==$sku_id)) {
                     $cartList[$index]->spec = $res[$sku_id];
                 }
             }
+
+            $res = [];
+            foreach ($cartList as $item) {
+                $shop = $this->goodsModel->queryGoodsShopById($item->shop_id);
+                $res[$item->shop_id]['shop'] = $shop;
+                $res[$item->shop_id]['cart_goods'][] = $item;
+            }
         }
 
-        return $cartList;
+        return $res;
     }
 
     /**
@@ -56,14 +68,19 @@ class CartRepository
      */
     public function add(int $user_id, int $spu_id, int $sku_id, int $shop_id, int $number)
     {
+        $bool = false;
+
         //查询购物车内是否已存在相应数据
         $cart = $this->cartModel->getById($user_id, $spu_id, $sku_id, $shop_id);
 
         //追加购物车数量，爆仓自平
         //这里用db可加for update锁
         $sku = $this->goodsModel->getSkuById($sku_id, $spu_id, $shop_id);
-        $bool = false;
-        if ( !empty($cart) && isset($sku['stock']) ) {
+
+        if (empty($sku['stock'])) {
+            return $bool;
+        }
+        if ( !empty($cart)) {
             if ($cart['spu_numbers']+$number <= $sku['stock']) {
                 $bool = $this->cartModel->addStock($cart['cart_id'], $number);
             }
@@ -98,5 +115,15 @@ class CartRepository
     public function updateSelectedById(int $cart_id, bool $isChecked):bool
     {
         return $this->cartModel->updateSelectedById($cart_id, $isChecked);
+    }
+
+    /**
+     * bath del goods selected
+     *
+     * @return mixed
+     */
+    public function delBySelected(int $user_id):bool
+    {
+        return $this->cartModel->delBySelected($user_id);
     }
 }

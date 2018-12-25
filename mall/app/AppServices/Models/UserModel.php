@@ -15,8 +15,6 @@ class UserModel
     private $master;
     private $slave;
 
-    private $uid;
-
     public function __construct()
     {
         $this->master = DB::connection('mysql::write');
@@ -41,7 +39,7 @@ EOF;
 //            dd($query);
 //        });
 
-        return (array) array_shift($res);
+        return empty($res)?[]: (array) array_shift($res);
     }
 
     /**
@@ -185,34 +183,39 @@ EOF;
     public function insert(array $data):int
     {
         //$this->master->enableQueryLog();
-        $this->uid = 0;
         try {
-            $this->b = $this->master->transaction(function () use ($data) {
+            $uid = $this->master->transaction(function () use ($data) {
                 //insert into users
-                $this->uid = $this->master->table($this->users)
+                $uid = $this->master->table($this->users)
                     ->insertGetId([
                             'nickname'  =>'',
                             'created_at'=>date('Y-m-d H:i:s',time()),
                             'type'      =>0
                     ]);
+
                 //insert into user_auths
                 foreach ($data as $v) {
+                    if ($v['grant_type'] != 'www') {
+                        $v['credential']='';
+                    }
                     $this->master->table($this->user_auths)
                         ->insertGetId([
-                            'uid'          => $this->uid,
+                            'uid'          => $uid,
                             'grant_type'   => $v['grant_type'],
                             'identifier'   => $v['identifier'],
                             'credential'   => $v['credential'],
                             'created_at'   => date('Y-m-d H:i:s',time())
                         ]);
                 }
+
+                return $uid;
             }, 5);
         }catch(\Throwable $e) {
-            $this->uid = 0;
+            $uid = 0;
         }
         //echo $this->master->getQueryLog();
 
-        return $this->uid??0;
+        return $uid;
     }
 
     /**
@@ -224,21 +227,22 @@ EOF;
      */
     public function softDelete(int $uid):bool
     {
-        $this->b=false;
+        $b=false;
         try{
             DB::transaction(function ()use ($uid) {
-                $this->b=$this->master->table($this->users)
+                $b=$this->master->table($this->users)
                     ->where(['id'=>$uid])
                     ->update(['state'=>1]);
-                $this->b=$this->master->table($this->user_auths)
+                $b=$this->master->table($this->user_auths)
                     ->where(['uid'=>$uid])
                     ->update(['unbind'=>1]);
+                return $b;
             }, 5);
         }catch(\Throwable $e){
-            $this->b = $e->getCode();
+            $b = $e->getCode();
         }
 
-        return $this->b;
+        return $b;
     }
 
 }

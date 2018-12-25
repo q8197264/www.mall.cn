@@ -58,9 +58,10 @@ class AddressRepository
     public function add(array $parameters): int
     {
         $row = $this->getDefaultByUid($parameters['user_id']);
-        if (empty($row)) {
-            $parameters['selected'] = 1;
-        }
+
+        //only one adress set default
+        $parameters['selected'] = empty($row)?1:0;
+
         $id = $this->addressModel->add($parameters);
 
         return $id;
@@ -89,7 +90,7 @@ class AddressRepository
      */
     public function delById(int $id, int $uid):bool
     {
-        $bool = $this->addressModel->del($id, $uid);
+        $bool = $this->addressModel->delById($id, $uid);
 
         return $bool;
     }

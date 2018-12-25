@@ -46,10 +46,6 @@ class CartService
         return $list;
     }
 
-    public function findById(int $uid){
-
-    }
-
     /**
      * add cart data with user
      *
@@ -83,6 +79,16 @@ class CartService
         return $this->cart->selected($cart_id, $isChecked);
     }
 
-    public function remove(){}
+    /**
+     * remove goods selected
+     *
+     * @param int $user_id
+     *
+     * @return bool
+     */
+    public function removeBySelected(int $user_id):bool
+    {
+        return $this->cart->removeBySelected($user_id);
+    }
 
 }

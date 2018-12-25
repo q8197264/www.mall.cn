@@ -45,30 +45,30 @@ return [
 
         'local' => [
             'driver' => 'local',
-            'root' => storage_path('app'),
+            'root'   => storage_path('app'),
         ],
 
         'public' => [
-            'driver' => 'local',
-            'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'driver'     => 'local',
+            'root'       => storage_path('app/public'),
+            'url'        => env('APP_URL') . '/storage',
             'visibility' => 'public',
         ],
 
-        's3' => [
+        's3'    => [
             'driver' => 's3',
-            'key' => env('AWS_ACCESS_KEY_ID'),
+            'key'    => env('AWS_ACCESS_KEY_ID'),
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
             'region' => env('AWS_DEFAULT_REGION'),
             'bucket' => env('AWS_BUCKET'),
         ],
         'qiniu' => [
-            'driver' => 'qiniu',
-            'key' => env('QINIU_ACCESS_KEY'),
-            'secret' => env('QINIU_SECRET_KEY'),
-            'region' => env('QINIU_DEFAULT_REGION'),
-            'bucket' => env('QINIU_BUCKET'),
-            'url' => env('QINIU_URL')
+            'driver'     => 'qiniu',
+            'access_key' => env('QINIU_ACCESS_KEY'),
+            'secret_key' => env('QINIU_SECRET_KEY'),
+            'region'     => env('QINIU_DEFAULT_REGION'),
+            'bucket'     => env('QINIU_BUCKET'),
+            'domain'     => env('QINIU_DOMAIN')
         ],
 
     ],

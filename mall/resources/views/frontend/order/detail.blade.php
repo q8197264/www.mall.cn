@@ -7,23 +7,36 @@
 
                 <div class="panel panel-default">
                     <div class="panel-heading">配送地址</div>
-                    <form action="/address" method="post">
-                        {{csrf_field()}}
-                        <input type="hidden" name="_method" value="PUT">
-                    @foreach ($address as $row)
-                        <div>{{$row->name}}</div>
-                        <div>{{$row->phone}}</div>
-                        <div>{{$row->tel}}</div>
-                        <div>{{$row->address}}</div>
-                        <div>{{$row->zipcode}}</div>
-                        @if ($row->selected)
-                            默认地址
-                        @endif
+
                         <div>
-                            <input type="submit" value="edit">
+                            <a href="/address/show">添加地址</a>
+                            </form>
+                        </div>
+                    @foreach ($address as $row)
+                        <form action="/address" method="post">
+                            {{csrf_field()}}
+                            <input type="hidden" name="_method" value="PUT">
+                        <div>姓名：{{$row->name}} | 手机：{{$row->phone}} |座机：{{$row->tel}}</div>
+                        <div>地址：{{$row->address}}
+                            @if ($row->selected)
+                                &nbsp&nbsp&nbsp&nbsp<span>默认地址</span>
+                            @else
+                                <a href="/address/{{$row->id}}/checked">设为默认地址</a>
+                            @endif
+                        </div>
+                        <div>邮编：{{$row->zipcode}} | <input type="submit" value="编辑地址"></div>
+                        </form>
+                        <div style="float:right">
+                            <form action="/address" method="post">
+                                {{csrf_field()}}
+                                <input type="hidden" name="_method" value="DELETE">
+                                <input type="hidden" name="id" value="{{$row->id}}">
+                                <input type="submit" value="删除地址">
+                            </form>
                         </div>
                     @endforeach
-                    </form>
+
+
 
                     <form action="/orders" method="post">
                         {{csrf_field()}}
@@ -40,7 +53,7 @@
                                 <hr>送货清单
                             </div>
                         </div>
-                        @foreach ($data as $row)
+                        @foreach ($data as $shop)
                             <div class="panel-body">
                                 <div>
                                     配送方式:
@@ -49,31 +62,33 @@
                                         <option value="0">EMS运输</option>
                                     </select>
                                 </div>
+                                @foreach ($shop['cart_goods'] as $goods)
                                 <div class="alert alert-success">
-                                    商品名：{{ $row->sku_name }}
+                                    商品名：{{ $goods->sku_name }}
                                 </div>
                                 <div style="float:left">
-                                    <input type="checkbox" name="cart_id[]" value="{{$row->cart_id}}" checked="checked">
+                                    <input type="checkbox" name="cart_id[]" value="{{$goods->cart_id}}" checked="checked">
                                 </div>
                                 <div style="float:left">
-                                    <img width="100" src="{{ $row->images }}">
+                                    <img width="100" src="{{ $goods->images }}">
                                 </div>
                                 <div style="float:left">
-                                    @foreach ($row->spec as $p)
+                                    @foreach ($goods->spec as $p)
                                         <p>{{ $p->spec_name }}:{{ $p->spec_value }}</p>
                                     @endforeach
                                 </div>
                                 <div style="margin-left:200px">
                                     数量：
                                     <input style="width:45px" type="number"
-                                           value="@if ($row->stock >= $row->spu_numbers){{$row->spu_numbers}}@else{{$row->stock}}@endif"
+                                           value="@if ($goods->stock >= $goods->spu_numbers){{$goods->spu_numbers}}@else{{$row->stock}}@endif"
                                            onclick="">
                                 </div>
                                 <div style="float:right">
-                                    <span>加入时价格:{{$row->add_price}}</span>
-                                    单价：<span>{{$row->price}}</span>
-                                    | <span style="color:red">{{ $row->price * $row->spu_numbers}}</span>
+                                    <span>加入时价格:{{$goods->add_price}}</span>
+                                    单价：<span>{{$goods->price}}</span>
+                                    | <span style="color:red">{{ $goods->price * $goods->spu_numbers}}</span>
                                 </div>
+                                @endforeach
                             </div>
                         @endforeach
                         <hr>

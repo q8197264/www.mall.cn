@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 use Illuminate\Http\Request;
 use App\AppServices\Services\UserService;
+use Libraries\Wechat;
 
 class LoginController extends Controller
 {
@@ -32,6 +33,9 @@ class LoginController extends Controller
      */
     protected $redirectTo = '/home/index';
 
+    protected static $auth;
+    protected $userService;
+
     /**
      * Create a new controller instance.
      *
@@ -41,28 +45,80 @@ class LoginController extends Controller
     {
         $this->middleware('guest', ['except' => 'logout']);
         $this->userService = $userService;
+        //(new Wechat\Wechat())->Index();//微信服务器配置连接
+        static::$auth = new Wechat\Authorize();
     }
 
     /**
      * 重写验证时使用的用户名字段
      */
-//    public function username()
-//    {
-//        return 'username';
-//    }
+    public function username()
+    {
+        return 'username';
+    }
 
     protected function redirectTo()
     {
         return $this->redirectTo;
     }
 
-    public function index()
+    /**
+     * 微信授权登陆
+     *
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    function index()
     {
-        if (!empty(session('user_id'))) {
-            return redirect('/home');
+//        if (!empty(session('user_id'))) {
+//            return redirect('/home');
+//        }
+//        return view('auth.login');
+//        exit;
+
+        $openid = session('openid');
+        if (empty($openid)) {
+            static::$auth ->auth();
+            static::$auth ->getOpenid() && session()->put('openid', static::$auth ->getOpenid());
         }
 
-        return view('auth.login');
+        $this->signin();
+    }
+
+    protected function signin()
+    {
+        $openid = session('openid');
+        if (empty($openid)) {
+            return redirect('/login');
+        }
+        $userdata = $this->userService->checkLogin($openid, '', 'wechat');
+        switch ($userdata['code']) {
+            case 0:
+                $userinfo = static::$auth ->getUserInfo($userdata['identifier']);
+
+                if (!empty($userinfo['nickname'])) {
+                    session()->put('user_id', $userdata['uid']);
+                    session()->put('nickname', $userinfo['nickname']);
+                } else {
+                    session()->forget('openid');
+                }
+
+                return redirect('/home');
+                break;
+            case 1:
+                $uid = $this->userService->register(['identifier'=>$openid,'credential'=>'','grant_type'=>'wechat']);
+                $userinfo = static::$auth ->getUserInfo($openid);
+                if (!empty($userinfo['nickname'])) {
+                    session()->put('user_id', $uid);
+                    session()->put('nickname', $userinfo['nickname']);
+                }else {
+                    session()->forget('openid');
+                }
+                return redirect('/home');
+                break;
+            case 2:
+                //$userdata['msg'] = 'password fail';
+                break;
+        }
     }
 
     /**
@@ -78,7 +134,7 @@ class LoginController extends Controller
         $username = array_shift($user);
         $password = array_shift($user);
 
-        $userdata = $this->userService->checkLogin($username, $password);
+        $userdata = $this->userService->checkLogin($username, $password, 'wechat');
 
         switch ($userdata['code']) {
             case 0:

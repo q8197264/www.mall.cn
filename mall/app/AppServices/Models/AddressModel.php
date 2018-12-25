@@ -33,7 +33,7 @@ class AddressModel
      *
      * @return mixed
      */
-    public function getListByUid(int $uid, int $limit)
+    public function getListByUid(int $uid, int $limit):array
     {
         $sql = <<<EOF
             SELECT
@@ -62,7 +62,7 @@ EOF;
      *
      * @return mixed
      */
-    public function getDefaultByUid(int $uid)
+    public function getDefaultByUid(int $uid):array
     {
         $sql = <<<EOF
             SELECT
@@ -83,7 +83,7 @@ EOF;
 EOF;
         $row = $this->slave->select($sql, [$uid]);
 
-        return $row;
+        return (array) array_pop($row);
     }
 
     /**
@@ -133,6 +133,11 @@ EOF;
         return $id;
     }
 
+    public function updateById()
+    {
+
+    }
+
     /**
      * Delete address by id and user_id
      *
@@ -144,7 +149,7 @@ EOF;
     public function delById(int $id, int $uid):bool
     {
         $sql = <<<EOF
-            DELETE * FROM `{$this->address}` WHERE `id`=? AND `user_id`=? LIMIT 1
+            DELETE  FROM `{$this->address}` WHERE `id`=? AND `user_id`=? LIMIT 1
 EOF;
         $bool = $this->master->delete($sql, [$id, $uid]);
 

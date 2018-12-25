@@ -29,18 +29,15 @@ class GoodsRepository
      *
      * @return array
      */
-    public function queryGoodsById(int $gid):array
-    {
-        $res = $this->goodsModel->queryGoodsSpuById($gid);
-        $res['spec'] = $this->goodsModel->queryGoodsSpecById($gid);
-//        print_r($res);
-        $spec_value_ids = array_column($res['spec'], 'spec_value_id');
-        $sku = $this->goodsModel->queryGoodsSkuById($gid, $spec_value_ids);
-//        print_r($sku);
-
-
-        return $res;
-    }
+//    public function queryGoodsById(int $gid):array
+//    {
+//        $res = $this->goodsModel->queryGoodsSpuById($gid);
+//        $res['spec'] = $this->goodsModel->queryGoodsSpecById($gid);
+//        $spec_value_ids = array_column($res['spec'], 'spec_value_id');
+//        $sku = $this->goodsModel->queryGoodsSkuById($gid, $spec_value_ids);
+//
+//        return $res;
+//    }
 
     /**
      * get designate goods spu
@@ -114,7 +111,13 @@ class GoodsRepository
      */
     public function queryGoodslist(int $offset, int $limit): array
     {
-        return $this->goodsModel->queryGoodsList($offset, $limit);
+        $list = $this->goodsModel->queryGoodsList($offset, $limit);
+        foreach ($list as $k=>$row) {
+            $list[$k]->brand_name  = $this->goodsModel->queryGoodsBrandById($row->brand_id);
+            $list[$k]->shop_name   = $this->goodsModel->queryGoodsShopById($row->shop_id)['shop_name'];
+        }
+
+        return $list;
     }
 
     /**

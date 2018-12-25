@@ -57,6 +57,9 @@ class UserRepository extends AbstractRepository
                 }
             }
 
+            if (empty($res)) {
+                $res[]=$fill;
+            }
             return $res;
         }
 
@@ -66,6 +69,7 @@ class UserRepository extends AbstractRepository
         if ($data['grant_type'] === 'www') {
             $data['grant_type'] = key($user);
         }
+
         $data['user']     = current($user);
         foreach ($data as $k=>$v) {
             if (isset(self::$map[$k])) {
@@ -128,7 +132,7 @@ class UserRepository extends AbstractRepository
     /**
      * Query user info by `grant_type`(帐户类型) and `identifier`(用户标识)
      *
-     * @param string $uname
+     * @param string $uname/openid
      * @param string $grant_type
      *
      * @return array

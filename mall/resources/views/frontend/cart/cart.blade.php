@@ -4,11 +4,15 @@
     <div class="container">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
-                <form action="/orders" method="post">
+                <form action="/orders/detail" method="post">
                     {{csrf_field()}}
                 <div class="panel panel-default">
                     <div class="panel-heading">购物车</div>
-                    @foreach ($data as $row)
+                    @foreach ($data as $id=>$shop)
+                        <div>
+                            <a href="/shop/{{$id}}" target="_blank">店铺:{{$shop['shop']['shop_name']}}</a>
+                        </div>
+                        @foreach ($shop['cart_goods'] as $row)
                         <div class="panel-body">
                             <div class="alert alert-success">
                                 商品名：{{ $row->sku_name }}
@@ -38,6 +42,7 @@
                                 | <span style="color:red">{{ $row->price * $row->spu_numbers}}</span>
                             </div>
                         </div>
+                        @endforeach
                     @endforeach
                     </div>
                 <input type="submit" value="结算"/>
@@ -50,7 +55,6 @@
 <script>
 function check(e)
 {
-    console.log(e);
     var _token = $('input[name="_token"]').val();
     $.ajax({
         url:'carts/selected',

@@ -76,7 +76,7 @@ class UserService
      *
      * @return mixed
      */
-    public function checkLogin(string $user, string $password, $grant_type=''):array
+    public function checkLogin(string $user, string $password, string $grant_type=''):array
     {
         $grant_type = empty($grant_type) ? 'www' : $grant_type;
         //1.频率控制（重复请求丢弃） md5->redis setnx
@@ -92,6 +92,12 @@ class UserService
         }
 
         return $res;
+    }
+
+
+    public function otherUserRegister()
+    {
+
     }
 
     /**

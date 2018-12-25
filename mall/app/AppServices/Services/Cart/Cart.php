@@ -65,4 +65,16 @@ class Cart extends AbstractCart
 
         return $bool;
     }
+
+    /**
+     * Clean goods selected
+     *
+     * @return bool
+     */
+    public function removeBySelected(int $user_id):bool
+    {
+        $bool = $this->getCartRespository()->delBySelected($user_id);
+
+        return $bool;
+    }
 }

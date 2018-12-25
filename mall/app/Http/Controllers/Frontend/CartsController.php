@@ -97,4 +97,5 @@ class CartsController extends Controller
 
         echo json_encode($bool);
     }
+
 }

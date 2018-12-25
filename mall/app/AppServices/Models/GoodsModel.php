@@ -42,6 +42,7 @@ class GoodsModel
     protected $goods_spu        = 'goods_spu';
 
     protected $goods_brand      = 'goods_brand';
+    protected $shop_info        = 'shop_info';
 
     //商品规格
     protected $goods_spu_spec   = 'goods_spu_spec';
@@ -73,23 +74,27 @@ class GoodsModel
      */
     public function queryGoodsList(int $offset, int $limit):array
     {
-        //商品 + 规格
         $sql = <<<EOF
             SELECT
                 p.`id`,
                 p.`goods_name`,
-                p.`sale`,
                 p.`category_id`,
                 p.`spu_no`,
                 p.`low_price`,
-                b.`brand_name` 
+                p.`brand_id`,
+                k.`status`,
+                k.`price`,
+                k.`shop_id`,
+                k.`stock`,
+                k.`images`   
             FROM
-                `goods_spu` p
-                LEFT JOIN `goods_brand` b ON p.`brand_id` = b.`id` 
+                `goods_sku` k
+                INNER JOIN `goods_spu` p ON k.`spu_id` = p.`id` 
             WHERE
-                p.id >= ( SELECT id FROM `goods_spu` ORDER BY id LIMIT ?, 1 )
+                k.`id` >= ( SELECT id FROM `goods_sku` WHERE `status`=0 ORDER BY id LIMIT ?, 1 )
                 LIMIT ?
 EOF;
+
         $list = $this->slave->select($sql, [$offset, $limit]);
 
         return $list;
@@ -108,7 +113,6 @@ EOF;
             SELECT
                 p.`id`,
                 p.`goods_name`,
-                p.`sale`,
                 p.`category_id`,
                 p.`spu_no`,
                 p.`low_price`,
@@ -152,7 +156,6 @@ EOF;
                 p.`category_id`,
                 p.`spu_no`,
                 p.`low_price` ,
-                p.`sale` ,
                 p.`brand_id` 
             FROM `{$this->goods_spu}` p
             WHERE p.`id`=? 
@@ -197,9 +200,9 @@ EOF;
      *
      * @return mixed
      */
-    public function queryGoodsSkuById(int $gid, array $ids)
+    public function queryGoodsSkuById(int $gid, array $spec_value_ids)
     {
-        $placeholder = trim(str_repeat('?,',count($ids)),',');
+        $placeholder = trim(str_repeat('?,',count($spec_value_ids)),',');
         $sql = <<<EOF
             SELECT
                 u.`id` `sku_id`,
@@ -221,8 +224,8 @@ EOF;
                 AND u.`spu_id` =?
             GROUP BY u.`id`
 EOF;
-        array_push($ids, $gid);
-        $rows = $this->slave->select($sql, $ids);
+        array_push($spec_value_ids, $gid);
+        $rows = $this->slave->select($sql, $spec_value_ids);
 
         return $rows;
     }
@@ -286,6 +289,23 @@ EOF;
     public function save(){}
 
     /**
+     * Get shop name
+     *
+     * @param int $shop_id
+     *
+     * @return array
+     */
+    public function queryGoodsShopById(int $shop_id) :array
+    {
+        $sql = <<<EOF
+            SELECT `shop_name` FROM `{$this->shop_info}` WHERE `id`=? LIMIT 1
+EOF;
+        $row = $this->slave->select($sql, [$shop_id]);
+
+        return (array) array_pop($row);
+    }
+
+    /**
      *
      * @param int $brand_id
      *
@@ -314,7 +334,7 @@ EOF;
      */
     public function addGoodsWith(array $data): bool
     {
-        DB::transaction(function () use ($data) {
+        $sku_id = $this->master->transaction(function () use ($data) {
             $spu_id = $this->master->table($this->goods_spu)->insertGetId([
                 'spu_no'      => $data['spu_no'],
                 'goods_name'  => $data['goods_name'],
@@ -323,17 +343,12 @@ EOF;
                 'category_id' => $data['category_id'],
                 'brand_id'    => $data['brand_id']
             ]);
-//            $spec_id = $this->master->talbe($this->goods_spec)->insertGetId([]);
             foreach ($data['spec'] as $v) {
-                $this->b = $this->master->table($this->goods_spu_spec)->insert([
+                $this->master->table($this->goods_spu_spec)->insert([
                     'spu_id'  => $spu_id,
                     'spec_id' => $v
                 ]);
-                if (empty($this->b)) {
-                    break;
-                }
             }
-//            $spec_value_id = $this->master->table($this->goods_spec_value)->insertGetId([]);
             $sku_id = $this->master->table($this->goods_sku)->insertGetId([
                 'sku_name'  => $data['sku_name'],//$data['goods_name']
                 'price'     => $data['low_price'],
@@ -343,18 +358,15 @@ EOF;
                 'images'    => ''
             ]);
             foreach ($data['spec_value'] as $v) {
-                $this->b = $this->master->table($this->goods_sku_spec_value)->insertGetId([
+                $this->master->table($this->goods_sku_spec_value)->insertGetId([
                     'sku_id' => $sku_id,
                     'spec_value_id'=>$v
                 ]);
-                if (empty($this->b)) {
-                    break;
-                }
             }
-
+            return $sku_id;
         }, 5);
 
-        return $this->b;
+        return empty($sku_id) ? false : true;
     }
 
     /**

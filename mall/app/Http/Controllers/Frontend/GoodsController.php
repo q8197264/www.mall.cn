@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers\Frontend;
 
-use App\AppServices\Services\Goods\Goods;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\AppServices\Services\GoodsService;
@@ -20,7 +19,6 @@ class GoodsController extends Controller
     {
         $data = $this->goodsService->info($gid);
         //echo json_encode($data);
-//        dd($data);
         return view('frontend.goods.detail',['data'=>$data]);
     }
 
