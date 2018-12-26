@@ -74,6 +74,7 @@ Route::group(['prefix' => 'admin', 'namespace'=>'Admin'], function () {
     Route::group(['namespace'=>'Frontend'], function(){
         Route::group(['middleware' => 'auth'], function () {
             Route::get('/', 'HomeController@index');
+            Route::get('comment', 'CommentController@index');
         });
         Route::get('home', 'HomeController@index')->name('home');
 //购物车
@@ -119,12 +120,12 @@ Route::group(['prefix' => 'admin', 'namespace'=>'Admin'], function () {
         route::delete('orders', 'OrdersController@delete')->name('orders.delete');
 
 //评论
-        route::get('comment/{oid}/show', 'CommentController@show')->name('comment.show');
+        route::get('comment/{oid}/link', 'CommentController@link')->name('comment.link');
         route::get('comment/{oid}/order/{kid}/todo', 'CommentController@todo')->name('comment.todo');
         route::get('comment/{oid}/todo', 'CommentController@todo')->name('comment.todo');
         route::post('comment', 'CommentController@add')->name('comment.add');
 
         //test
         route::get('comment/test', 'CommentController@test')->name('comment.test');
-        route::post('comment/uptest', 'CommentController@test')->name('comment.test');
+        route::post('comment/uptest', 'CommentController@uptest')->name('comment.uptest');
     });

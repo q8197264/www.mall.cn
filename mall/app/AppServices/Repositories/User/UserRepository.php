@@ -166,9 +166,9 @@ class UserRepository extends AbstractRepository
      *
      * @return mixed
      */
-    public function queryUserById(int $uid=0)
+    public function queryUserById(int $user_id=0)
     {
-        return $this->userModel->queryUserByIndex(['id'=>$uid]);
+        return $this->userModel->queryUserByIndex(['id'=>$user_id]);
     }
 
     /**

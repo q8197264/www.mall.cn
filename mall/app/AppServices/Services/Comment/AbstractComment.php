@@ -18,9 +18,11 @@ abstract class AbstractComment
     public function __construct(App $app)
     {
         if (empty($this->getCommentRepository())) {
-            static::$commentRepository = $app->make('App\AppServices\Repositories\Comment\CommentRepository');
+            static::$commentRepository = $app
+                ->make('App\AppServices\Repositories\Comment\CommentRepository');
         }
         $this->app = $app;
+        $this->initialize();
     }
 
     public function getCommentRepository()

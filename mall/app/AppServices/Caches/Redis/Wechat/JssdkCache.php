@@ -2,6 +2,7 @@
 
 namespace App\AppServices\Caches\Redis\Wechat;
 
+use http\Env\Request;
 use Illuminate\Support\Facades\Redis;
 use App\AppServices\Caches\Redis\Config;
 
@@ -25,7 +26,7 @@ class JssdkCache extends Config
 
     public static function getToken()
     {
-        $token = Redis::get(self::$wechat_token_hash);
+        $token = Redis::get(self::$wechat_token_string);
 
         return $token;
     }
@@ -45,4 +46,5 @@ class JssdkCache extends Config
 
         return $ticket;
     }
+
 }

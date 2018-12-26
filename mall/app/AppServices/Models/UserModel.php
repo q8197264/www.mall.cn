@@ -49,24 +49,30 @@ EOF;
      *
      * @return mixed
      */
-    public function queryUserByIndex(array $wheres)
+    public function queryUserByIndex(array $wheres):array
     {
         $where  = '';
         foreach ($wheres as $k=>$v) {
-            $where .= ' `'.$k.'`="'.$v.'" AND';
+            $where .= ' u.`'.$k.'`=？ AND';
         }
         $where = trim($where, 'AND');
         $sql = <<<EOF
-            SELECT 
-                `uid`,`grant_type`,`credential` 
-            FROM 
-                `{$this->user_auths}` 
-            WHERE 
-                {$where} AND `unbind`=0 
-            LIMIT 1
+            SELECT
+                a.`uid`,
+                a.`grant_type`,
+                a.`credential`,
+                u.`nickname` 
+            FROM
+                `{$this->user_auths}` a
+                INNER JOIN `{$this->users}` u ON a.`uid` = u.`id` 
+            WHERE
+                {$where}
+                AND `unbind` = 0 
+                LIMIT 1
 EOF;
-        $res = $this->slave->select($sql);
-
+        $args = array_values($wheres);
+        $res = $this->slave->select($sql, $args);
+dd('test',$res);
         return (array) array_pop($res);
     }
 

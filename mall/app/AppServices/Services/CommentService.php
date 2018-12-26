@@ -21,11 +21,30 @@ class CommentService
         $this->admin = $admin;
     }
 
-    public function add(int $user_id, int $sku_id, int $order_id, string $order_sn)
+    /**
+     *
+     * @param array $parameters
+     *             [
+     *             int $user_id,
+     *             int $sku_id,
+     *             int $order_id,
+     *             string $order_sn
+     *             comment_content
+     *             paths
+     * ]
+     *
+     *
+     */
+    public function save(array $parameters=[])
     {
-        dd(func_get_args());
-        echo 'add comment';
-//        $this
+        try{
+            $res = $this->comment->save($parameters);
+        }catch(\Exception $e){
+            $res['error'] = 1;
+            $res['msg'] = $e->getMessage();
+        }
+
+        return $res;
     }
 
     /**

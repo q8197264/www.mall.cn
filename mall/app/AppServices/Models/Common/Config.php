@@ -19,6 +19,7 @@ abstract class Config
     public $order_goods = 'order_goods';
 
     public $order_goods_comments = 'order_goods_comments';
+    public $order_goods_comment_images = 'order_goods_comment_images';
 
     protected $master;
     protected $slave;

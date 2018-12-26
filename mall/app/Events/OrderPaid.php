@@ -14,7 +14,7 @@ class OrderPaid
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    protected $order;
+    public $order;
 
     /**
      * Create a new event instance.
@@ -25,7 +25,6 @@ class OrderPaid
     {
         //
         $this->order = $order;
-        echo 'create construct dependent object args...';
     }
 
     /**

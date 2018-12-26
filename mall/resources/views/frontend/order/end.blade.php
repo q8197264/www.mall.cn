@@ -13,7 +13,7 @@
                                 订单流水：{{$v['order_sn']}}
                                 <div class="alert alert-success">
                                     <a href="/orders/{{$v['order_id']}}/show" target="_blank">查看订单</a>
-                                    <a href="/comment/{{$v['order_id']}}/show" target="_blank">去评价</a>
+                                    <a href="/comment/{{$v['order_id']}}/link" target="_blank">去评价</a>
                                 </div>
                             </div>
                     @endforeach

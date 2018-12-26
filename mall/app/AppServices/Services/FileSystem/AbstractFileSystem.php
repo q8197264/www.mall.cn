@@ -11,14 +11,14 @@ use Illuminate\Container\Container as App;
  */
 abstract class AbstractFileSystem
 {
-    protected static $commentRepository;
     protected $app;
+    protected static $commentRepository;
 
     public function __construct(App $app)
     {
         if (empty($this->getCommentRepository())) {
             static::$commentRepository = $app
-                ->make("App\AppServices\Repositories\Comment\CommentRepository");
+                ->make('App\AppServices\Repositories\Comment\CommentRepository');
         }
         $this->app = $app;
         $this->initailize();

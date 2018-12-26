@@ -55,6 +55,23 @@ class CommentRepository
         return $list;
     }
 
-    public function save()
-    {}
+    public function addOnlyComment(array $parameters):bool
+    {
+        return $this->commentModel->addOnlyComment($parameters);
+    }
+
+    /**
+     *  add comment images relate to comment
+     *
+     * @param int    $comment_id
+     * @param string $path
+     *
+     * @return bool
+     */
+    public function addCommentAndImage(array $parameters):bool
+    {
+        return $this->commentModel->addCommentAndImage($parameters);
+    }
+
+
 }

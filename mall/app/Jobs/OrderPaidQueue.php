@@ -39,9 +39,9 @@ class OrderPaidQueue implements ShouldQueue
     public function handle()
     {
         //
-        sleep(5);
         $wechat = new Response();
-        print_r($this->message);
-        echo 'Send queue order paid message...';
+
+        //发微信模板
+        echo '订单支付成功...'.json_encode($this->message);
     }
 }

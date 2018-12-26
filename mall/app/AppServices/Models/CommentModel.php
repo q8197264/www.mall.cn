@@ -12,14 +12,6 @@ use App\AppServices\Models\Common\Config;
 
 class CommentModel extends Config
 {
-    public function add()
-    {
-        $sql = <<<EOF
-            insert into ``()value()
-EOF;
-        dd($sql);
-    }
-
     /**
      * query goods are commented
      *
@@ -91,6 +83,57 @@ EOF;
         $rows = $this->slave->select($sql, $where);
 
         return $rows;
+    }
+
+    public function addOnlyComment(array $parameters)
+    {
+        $sql = <<<EOF
+            insert into 
+              `{$this->order_goods_comments}`(
+                  `order_no`,
+                  `order_id`,
+                  `spu_id`,
+                  `sku_id`,
+                  `user_id`,
+                  `nickname`,
+                  `comment`,
+                  `source`,
+                  `images`,
+                  `created_at`,
+                  `updated_at`
+                )value(
+                  ?,?,?,?,?,?,?,?,?,?,?
+                )
+EOF;
+dd($parameters);
+        $id = $this->master->insert($sql, [$order_id, $sku_id, $spu_id, $comment_content]);
+
+        return $id;
+    }
+
+    /**
+     * comment images
+     *
+     * @param int    $comment_id
+     * @param string $path
+     *
+     * @return mixed
+     */
+    public function addCommentAndImage(int $comment_id, string $path):int
+    {
+        $sql = <<<EOF
+            INSERT INTO `{$this->order_goods_comment_images}` ( 
+              `comment_id`, 
+              `path`, 
+              `created_at`, 
+              `updated_at` 
+            ) VALUE
+                ( ?,?,?,? )
+EOF;
+        $now = date('Y-m-d H:i:s', time());
+        $id = $this->master->insert($sql, [$comment_id, $path, $now, $now]);
+
+        return $id;
     }
 
 }

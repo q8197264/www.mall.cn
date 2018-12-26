@@ -33,24 +33,32 @@ class CommentController extends Controller
         $this->fileSystemService = $fileSystemService;
     }
 
-    public function test(Request $request)
+    public function test()
     {
-//        $file = '/www/www.mall.cn/mall/public/images/goods_comment/2018_12_25/15457467731759596053.jpg';
-        $list = $this->fileSystemService->listFile();
-//        echo json_encode($request->file('image'));
-
-        // 判断文件是否上传以及获取的文件是否是个有效的实例对象
-        if ($request->hasFile('image') && $request->file('image')->isValid()) {
-            return $this->fileSystemService->uploadFile($request->file('image'));
-
-            exit ("请上传文件！");
-            //$media_id = $request->input('mediaIds');
-//            $nil = $this->fileSystemService->upload($order_id, $media_id, $user_id);
-        }
         $jssdk = new JSSDK();
         $config = $jssdk->GetSignPackage();
+
+        $list = $this->fileSystemService->listFile();
+
         return view('frontend.comment.test',['list'=>$list,'config'=>$config]);
     }
+
+    public function uptest(Request $request)
+    {
+        $media_id = $request->input('mediaIds');
+        $media_id = array_unique($media_id);
+        $comment_id = $request->input('cid');
+
+        // save 七牛 判断文件是否上传以及获取的文件是否是个有效的实例对象
+        $nil = $this->fileSystemService->uploadFile($media_id, $comment_id);//$request->file('image')
+
+        echo json_encode($nil);
+    }
+
+    /**
+     * kind of goods with different status
+     */
+    public function index() {}
 
     /**
      * 待评论商品list
@@ -59,13 +67,13 @@ class CommentController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function show(int $order_id)
+    public function link(int $order_id)
     {
         $this->isLogin();
 
         $list = $this->commentService->getGoodsWithWaitComment($order_id);
 
-        return view('frontend.comment.intolink', ['list'=>$list]);
+        return view('frontend.comment.link', ['list'=>$list]);
     }
 
     /**
@@ -77,18 +85,17 @@ class CommentController extends Controller
      */
     public function todo(int $order_id, int $sku_id)
     {
-        $user_id =$this->isLogin();
+        $this->isLogin();
 
         $list = $this->commentService->getGoodsWithWaitComment($order_id, $sku_id);
 
         $jssdk = new JSSDK();
         $config = $jssdk->GetSignPackage();
-        //$jssdk->downloadImage();
+
+        //$list = $this->fileSystemService->listFile();
 
         return view('frontend.comment.add',['list'=>$list, 'config'=>$config]);
-
     }
-
 
     /**
      * submit comment
@@ -99,35 +106,22 @@ class CommentController extends Controller
      */
     public function add(Request $request)
     {
-//        $user_id  = $this->isLogin();
-//        $sku_id   = $request->input('sid');
-//        $order_id = $request->input('oid');
-//        $order_sn = $request->input('osn');
-//        $this->commentService->add($user_id, $sku_id, $order_id, $order_sn);
-//        $goods = $this->
+        $parameters['user_id'] = $this->isLogin();
+        $media_ids = $request->input('mediaIds');
+        if (!empty($media_ids) && is_array($media_ids)) {
+            $parameters['media_ids'] = array_unique($media_ids);
+        }
+        $parameters['order_id'] = $request->input('oid');
+        $parameters['sku_id'] = $request->input('kid');
+        $parameters['comment_content'] = $request->input('comment_content');
 
-        $media_id = $request->input('mediaIds');
+        $nil = $this->commentService->save($parameters);
 
-        //$res = (new JSSDK())->downloadImage($MEDIA_ID);
-        echo json_encode($media_id);
-        //return view('frontend.comment.add', ['config'=>$config]);
+        echo json_encode($nil);
     }
 
-    public function detail()
-    {
-//        $spu_id;
-//        $sku_id;
-//        $order_no;
 
-    }
 
-    /**
-     * kind of goods with different status
-     */
-    public function list()
-    {
-
-    }
 
     /**
      * check user login status

@@ -29,9 +29,7 @@ class SendOrderPaidNotify
      */
     public function handle(OrderPaid $event)
     {
-        $msg = json_encode($this->order);
-
         //放入队列
-        dispatch(new OrderPaidQueue($msg));
+        dispatch(new OrderPaidQueue($event->order));
     }
 }

@@ -21,16 +21,31 @@ class FileSystemService
         $this->qiniuCloud = $qiniuCloud;
     }
 
-    public function uploadFile(string $file, int $comment_id=0)
+    /**
+     * fetch file from other url
+     *
+     * @param array $media_ids
+     *
+     * @return array
+     */
+    public function fetchFileFromUrl(array $media_ids):array
     {
-//        $filepath = (new JSSDK())->downloadImage($file);
-//        if (!empty($filepath)) {
-            //insert db
-            return $this->qiniuCloud->qiniuUpload($file);
-//        }
+        //从微信服务器下载
+        foreach ($media_ids as $media_id) {
+            try{
+                $urlList = (new JSSDK())->getWechatImageUrl($media_id);
 
+                //fetch to qiniu from wechat
+                $info = $this->qiniuCloud->fetchFromUrl($urlList);
 
-//        return $id??0;
+                $res[] = $info['key'];
+            }catch(\Exception $e){
+                $res['code'] = 1;
+                $res['msg']  = $e->getMessage();
+            }
+        }
+
+        return $res;
     }
 
 
