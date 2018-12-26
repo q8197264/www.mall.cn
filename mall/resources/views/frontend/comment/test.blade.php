@@ -37,23 +37,27 @@
                         </div>
 
                     <div>
+                        <p>
+                            <span class="desc">拍照或从手机相册中选图接口</span>
+                            <button class="btn btn_primary" id="chooseImage">chooseImage</button>
+                        <div id="thumbnail"></div>
+                        </p>
 
-                        <h3 id="menu-image">图像接口</h3>
+                        <p>
+                            <span class="desc">预览图片接口</span>
+                            <button class="btn btn_primary" id="previewImage">previewImage</button>
+                        </p>
 
-                        <span class="desc">拍照或从手机相册中选图接口</span>
-                        <button class="btn btn_primary" id="chooseImage">chooseImage</button>
-                        <div id="thumbnail">
+                        <p>
+                            <span class="desc">上传图片接口</span>
+                            <button class="btn btn_primary" id="uploadImage">uploadImage</button>
+                        </p>
 
-                        </div>
+                        <p>
+                            <span class="desc">下载图片接口</span>
+                            <button class="btn btn_primary" id="downloadImage">downloadImage</button>
+                        </p>
 
-                        <span class="desc">预览图片接口</span>
-                        <button class="btn btn_primary" id="previewImage">previewImage</button>
-
-                        <span class="desc">上传图片接口</span>
-                        <button class="btn btn_primary" id="uploadImage">uploadImage</button>
-
-                        <span class="desc">下载图片接口</span>
-                        <button class="btn btn_primary" id="downloadImage">downloadImage</button>
                     </div>
                 </div>
             </div>
