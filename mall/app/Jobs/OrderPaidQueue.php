@@ -8,18 +8,23 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
+use Libraries\Wechat\Response\Response;
+
 class OrderPaidQueue implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    protected $message;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($message)
     {
         //
+        $this->message = $message;
     }
 
     /**
@@ -35,6 +40,8 @@ class OrderPaidQueue implements ShouldQueue
     {
         //
         sleep(5);
+        $wechat = new Response();
+        print_r($this->message);
         echo 'Send queue order paid message...';
     }
 }

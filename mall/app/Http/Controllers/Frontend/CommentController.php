@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 
 use App\AppServices\Services\CommentService;
 use App\AppServices\Services\OrderService;
+
+use Services\FileSystemService;
 use Libraries\Wechat\Jssdk\JSSDK;
 
 /**
@@ -19,10 +21,35 @@ class CommentController extends Controller
     protected $commentService;
     protected $orderService;
 
-    public function __construct(CommentService $commentService, OrderService $orderService)
+    protected $fileSystemService;
+
+    public function __construct(CommentService $commentService,
+                                OrderService $orderService,
+                                FileSystemService $fileSystemService)
     {
         $this->commentService = $commentService;
         $this->orderService = $orderService;
+
+        $this->fileSystemService = $fileSystemService;
+    }
+
+    public function test(Request $request)
+    {
+//        $file = '/www/www.mall.cn/mall/public/images/goods_comment/2018_12_25/15457467731759596053.jpg';
+        $list = $this->fileSystemService->listFile();
+//        echo json_encode($request->file('image'));
+
+        // 判断文件是否上传以及获取的文件是否是个有效的实例对象
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
+            return $this->fileSystemService->uploadFile($request->file('image'));
+
+            exit ("请上传文件！");
+            //$media_id = $request->input('mediaIds');
+//            $nil = $this->fileSystemService->upload($order_id, $media_id, $user_id);
+        }
+        $jssdk = new JSSDK();
+        $config = $jssdk->GetSignPackage();
+        return view('frontend.comment.test',['list'=>$list,'config'=>$config]);
     }
 
     /**
@@ -34,7 +61,7 @@ class CommentController extends Controller
      */
     public function show(int $order_id)
     {
-        $user_id = $this->isLogin();
+        $this->isLogin();
 
         $list = $this->commentService->getGoodsWithWaitComment($order_id);
 
@@ -79,10 +106,10 @@ class CommentController extends Controller
 //        $this->commentService->add($user_id, $sku_id, $order_id, $order_sn);
 //        $goods = $this->
 
-        $MEDIA_ID = $request->input('mediaIds');
+        $media_id = $request->input('mediaIds');
 
         //$res = (new JSSDK())->downloadImage($MEDIA_ID);
-        echo json_encode($MEDIA_ID);
+        echo json_encode($media_id);
         //return view('frontend.comment.add', ['config'=>$config]);
     }
 
@@ -107,11 +134,11 @@ class CommentController extends Controller
      *
      * @return int
      */
-    protected function isLogin():int
+    protected function isLogin()
     {
         $user_id = session('user_id');
         if (empty($user_id)) {
-            return redirect('/login');
+            return redirect('login');
         }
 
         return $user_id;

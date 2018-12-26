@@ -1,5 +1,5 @@
 <?php
-namespace App\AppServices\Services\FileSystem;
+namespace Services\FileSystem;
 
 /**
  * Qiniu adapter.

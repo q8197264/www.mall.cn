@@ -110,7 +110,7 @@ class Order extends AbstractOrder
     {
         //send message
         foreach ($notifies as $k=>$v) {
-            event(new OrderPaid());
+            event(new OrderPaid($v));
         }
     }
 

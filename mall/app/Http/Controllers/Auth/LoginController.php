@@ -45,8 +45,6 @@ class LoginController extends Controller
     {
         $this->middleware('guest', ['except' => 'logout']);
         $this->userService = $userService;
-        //(new Wechat\Wechat())->Index();//微信服务器配置连接
-        static::$auth = new Wechat\Authorize();
     }
 
     /**
@@ -69,56 +67,52 @@ class LoginController extends Controller
      */
     function index()
     {
-//        if (!empty(session('user_id'))) {
-//            return redirect('/home');
-//        }
-//        return view('auth.login');
-//        exit;
+        //检测客户端
+        if (true) {
+            //(new Wechat\Response\Response())->Index();exit;//微信服务器配置连接
 
+            //微信授权登陆
+            $this->wechatAuthLogin();
+        }else{
+            //网站登录
+            $this->webLogin();
+        }
+    }
+
+    protected function wechatAuthLogin()
+    {
+        static::$auth = new Wechat\Authorize();
         $openid = session('openid');
         if (empty($openid)) {
             static::$auth ->auth();
             static::$auth ->getOpenid() && session()->put('openid', static::$auth ->getOpenid());
         }
 
-        $this->signin();
-    }
-
-    protected function signin()
-    {
-        $openid = session('openid');
         if (empty($openid)) {
             return redirect('/login');
         }
         $userdata = $this->userService->checkLogin($openid, '', 'wechat');
-        switch ($userdata['code']) {
-            case 0:
-                $userinfo = static::$auth ->getUserInfo($userdata['identifier']);
-
-                if (!empty($userinfo['nickname'])) {
-                    session()->put('user_id', $userdata['uid']);
-                    session()->put('nickname', $userinfo['nickname']);
-                } else {
-                    session()->forget('openid');
-                }
-
-                return redirect('/home');
-                break;
-            case 1:
-                $uid = $this->userService->register(['identifier'=>$openid,'credential'=>'','grant_type'=>'wechat']);
-                $userinfo = static::$auth ->getUserInfo($openid);
-                if (!empty($userinfo['nickname'])) {
-                    session()->put('user_id', $uid);
-                    session()->put('nickname', $userinfo['nickname']);
-                }else {
-                    session()->forget('openid');
-                }
-                return redirect('/home');
-                break;
-            case 2:
-                //$userdata['msg'] = 'password fail';
-                break;
+        if ($userdata['code'] == 1) {
+            $userdata['uid'] = $this->userService->register(['identifier'=>$openid,'credential'=>'','grant_type'=>'wechat']);
         }
+        $userinfo = static::$auth ->getUserInfo($openid);
+        if (!empty($userinfo['nickname'])) {
+            session()->put('user_id', $userdata['uid']);
+            session()->put('nickname', $userinfo['nickname']);
+        }else {
+            session()->forget('openid');
+        }
+
+        return redirect('/home');
+    }
+
+    protected function webLogin()
+    {
+        if (!empty(session('user_id'))) {
+            return redirect()->route('home');
+        }
+
+        return view('auth.login');
     }
 
     /**

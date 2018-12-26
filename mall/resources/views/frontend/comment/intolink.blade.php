@@ -17,13 +17,6 @@
                             </div>
                             查看订单
                             <a href="/comment/{{$goods->order_id}}/order/{{$goods->sku_id}}/todo">评价</a>
-                            {{--<form action="/comment/todo" method="post">--}}
-                                {{--{{csrf_field()}}--}}
-                                {{--<input type="hidden" name="osn" value="{{$goods->order_no}}">--}}
-                                {{--<input type="hidden" name="oid" value="{{$goods->order_id}}">--}}
-                                {{--<input type="hidden" name="sid" value="{{$goods->sku_id}}">--}}
-                                {{--<input type="submit" value="评价">--}}
-                            {{--</form>--}}
                         </div>
 
                     </div>

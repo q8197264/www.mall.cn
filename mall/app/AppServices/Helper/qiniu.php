@@ -5,6 +5,7 @@
  * Date: 2018-12-25
  * Time: 11:11
  */
+
 use Qiniu\Auth;
 use Qiniu\Storage\UploadManager;
 use Qiniu\Storage\BucketManager;
@@ -14,6 +15,7 @@ use Qiniu\Storage\BucketManager;
  */
 function qiniuConfig()
 {
+    echo 111;
     // 获取七牛云配置信息
     $config = Config::get('filesystems.disks.qiniu');
     // 构建鉴权对象
@@ -40,12 +42,15 @@ function qiniuUpload($file)
     //获取文件的扩展名
     $ext = $file->getClientOriginalExtension();
     // 新文件名
-    $key = date('Y-m-d-H-i-s') . '-' . uniqid() .'.'. $ext;
+    $key = date('Y-m-d-H-i-s') . '-' . uniqid() . '.' . $ext;
     // 初始化 UploadManager 对象并进行文件的上传。
     $uploadMgr = new UploadManager();
+
     // 调用 UploadManager 的 putFile 方法进行文件的上传。
     $uploadMgr->putFile($token, $key, $filePath);
     // 返回上传到云纯属的关键字信息
+    echo $key;
+
     return $key;
 }
 
@@ -86,7 +91,7 @@ function qiniuList()
 
     // 判断结果
     if ($err !== null) {
-        return ["err"=>1, "msg"=>$err, "data"=>""];
+        return ["err" => 1, "msg" => $err, "data" => ""];
     } else {
         //返回文件列表完整信息
         return $ret;
@@ -118,7 +123,7 @@ function qiniuDownload($key)
     // 获取指定文件的大小
     $fileSize = qiniuStat($key)[0]['fsize'];
     // 获取指定key的文件完整路径
-    $filePath = Config::get('filesystems.disks.qiniu.domain'). "/" . $key;
+    $filePath = Config::get('filesystems.disks.qiniu.domain') . "/" . $key;
     // 打开浏览器的缓存区
     ob_start();
     // 构建下载header信息，开始下载

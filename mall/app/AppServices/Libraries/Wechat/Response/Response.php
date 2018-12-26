@@ -1,5 +1,5 @@
 <?php
-namespace Libraries\Wechat;
+namespace Libraries\Wechat\Response;
 
 
 //实例化Wechat类
@@ -13,7 +13,7 @@ namespace Libraries\Wechat;
  * Date: 2018-12-24
  * Time: 18:06
  */
-class Wechat
+class Response
 {
 
     public $token = 'mall';

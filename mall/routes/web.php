@@ -63,19 +63,19 @@ Route::group(['prefix' => 'admin', 'namespace'=>'Admin'], function () {
 
 //前端路由
     Auth::routes();
-
     Route::group(['namespace'=>'Auth'],function(){
         Route::get('login', 'LoginController@index')->name('login');
         Route::post('login', 'LoginController@authenticate');
         Route::post('logout', 'LoginController@logout');
         Route::post('register', 'RegisterController@register');
+
     });
 
     Route::group(['namespace'=>'Frontend'], function(){
         Route::group(['middleware' => 'auth'], function () {
             Route::get('/', 'HomeController@index');
         });
-        Route::get('home', 'HomeController@index')->name('home.index');
+        Route::get('home', 'HomeController@index')->name('home');
 //购物车
         route::get('carts/{cid?}', 'CartsController@show')->name('carts.show');
         route::post('carts', 'CartsController@add')->name('carts.add');
@@ -123,4 +123,8 @@ Route::group(['prefix' => 'admin', 'namespace'=>'Admin'], function () {
         route::get('comment/{oid}/order/{kid}/todo', 'CommentController@todo')->name('comment.todo');
         route::get('comment/{oid}/todo', 'CommentController@todo')->name('comment.todo');
         route::post('comment', 'CommentController@add')->name('comment.add');
+
+        //test
+        route::get('comment/test', 'CommentController@test')->name('comment.test');
+        route::post('comment/uptest', 'CommentController@test')->name('comment.test');
     });
