@@ -11,7 +11,7 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/api':{
+      '/admin':{
         target:'http://www.mall.cn/admin',
         changeOrigin: true,
         pathRewrite: {

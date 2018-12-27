@@ -1,39 +1,35 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Loading from '../components/loading'
-import Layout from '../layout/layout.vue'
+import Layout from '../layout/Layout.vue'
 
-import Home from '../admin/home.vue'
-import Login from '../admin/login.vue'
+Vue.use(Router)
 
-Vue.use(Router);
+export const constRouterMap = [
+  {
+    path: '/loading',
+    name: 'loading',
+    component: () => import('@/components/loading'),
+    meta: {title: '载入页面...', icon: 'sms-hot', keepalive: false}
+  },
+  {path: '/login', name: 'login', component: () => import('@/views/login/login'), hidden: true},
+  {path: '/404', component: () => import('@/views/404'), hidden: true},
+  {
+    path: '',
+    component: Layout,
+    redirect: '/home',
+    children: [{
+      path: 'home',
+      name: 'home',
+      component: () => import('@/views/home/home'),
+      meta: {title: '首页', icon: 'home'}
+    }]
+  }
+]
 
 export default new Router({
-  name: 'history',
+  // mode: 'history', //后端支持可开
+  scrollBehavior: () => ({y: 0}),
   base: process.env.BABEL_ENV,
-  routes: [
-    {
-      path: '/',
-      name: 'layout',
-      component: Layout
-    },
-    {
-      path: '/loading',
-      name: 'loading',
-      component: Loading,
-      meta: {
-        keepalive:false
-      }
-    },
-    {
-      path: '/home',
-      name: 'home',
-      component: Home
-    },{
-      path: '/login',
-      name: 'login',
-      component: Login
-    }
-  ]
+  routes: constRouterMap
 })

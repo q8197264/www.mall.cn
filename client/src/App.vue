@@ -3,9 +3,6 @@
     <router-view/>
   </div>
 </template>
-<!--
-"E:\nodejs\node.exe" "E:\nodejs\node_modules\npm\bin\npm-cli.js" install --script-prepend-node-path=auto
--->
 <script>
 export default {
   name: 'App'

@@ -1,12 +1,112 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>mall</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
-  </body>
+    <title>test</title>
+</head>
+<body>
+<div id="app">
+    <table>
+        <tr>
+            <td>公司目前估值：</td><td>45万<input id="valu" type="hidden" value="450000" disabled></td>
+        </tr>
+    <tr>
+        <td>此次总融资额：</td>
+        <td><input id="finan" type="number" value="100000"></td>
+    </tr>
+    <tr><td>个人入股：</td><td><input id="buy_in" type="number" placeholder="输入你的投资金额"></td></tr>
+    </table>
+
+    <p>
+        <button onclick="test()">计算股权比例</button>&nbsp
+        <button onclick="test2()">查看原始股权比例</button>
+    </p>
+    <div id="detail"></div>
+</div>
+
+</body>
 </html>
+<script>
+    var valu = document.getElementById('valu');
+    var buy_in = document.getElementById('buy_in');
+    var finan = document.getElementById('finan');
+    var detail = document.getElementById('detail');
+
+    var List = function () {
+        //公司估值
+        this.valuaction = parseInt(valu.value);
+
+        //股东
+        this.users = {'lfp': 0.05, 'ln': 0.05, 'rzb': 0.05, 'nm': 0.1, 'lxq': 0.75};
+        this.names = {'lfp': '李凤平', 'ln': '刘龙', 'rzb': '任子波', 'nm': '聂敏', 'lxq': '刘孝全'};
+
+        this.compute = function (auth='') {
+            //默认融资金额
+            this.financing = parseInt(finan.value);
+            //融资后估值
+            this.total = this.valuaction + this.financing;
+
+            var text = '<p>总融资占比:<span style="color:red">' +
+                this.percentNum(this.financing, this.total) + '%</span></p>';
+
+            //个人投资金额
+            text += this.proShow();
+
+            if (auth == 'jtj2018') {
+                text += this.allShow();
+            }
+
+
+            detail.innerHTML = text;
+        };
+
+        this.proShow = function () {
+            var text='';
+            this.buy_in = parseInt(buy_in.value);
+            var pro = this.percentNum(this.buy_in, this.total);
+            text += '<span style="color:red">个人入股占比:</span><input type="text" value="' + (pro ? pro : 0) + '" disable>%<br/>';
+
+            return text;
+        };
+
+        this.allShow = function (){
+            text = '<table>';
+            var users = {'lfp': 0.05, 'rzb': 0.05, 'nm': 0.1};
+            for (var name in this.users) {
+                var t = this.percentNum(this.users[name] * this.valuaction, this.total);
+
+                if (name == 'nm' || name == 'lfp' || name == 'rzb') {
+                    users[name] = t;
+                    t += '+' + t + '分红=' + 2 * t;
+                }
+                if (name == 'lxq') {
+                    var r = t - (users['lfp'] + users['nm'] + users['rzb']);
+                    t += '-' + (users['lfp'] + users['nm'] + users['rzb']) + '分红=' + r;
+                }
+
+                text += '<tr><td>'+this.names[name] + ':</td><td><input type="text" value="' + t
+                    + '" disable>%</td></tr>';
+            }
+            text +='</table>';
+            return text;
+        }
+
+        this.percentNum = function (part, total) {
+            //小数点后两位百分比
+            return (Math.round(part / total * 10000) / 100.00);
+        }
+    }
+
+    var list = new List(buy_in.value);
+
+    function test() {
+        list.compute();
+    }
+
+    function test2() {
+        var auth = prompt('请输入授权码!');
+        list.compute(auth);
+    }
+
+</script>

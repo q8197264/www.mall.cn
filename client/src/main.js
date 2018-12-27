@@ -2,7 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import Element from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css';
+import 'element-ui/lib/theme-chalk/index.css'
 import App from './App'
 import router from './router'
 // import vuex from './vuex'
@@ -10,9 +10,9 @@ import axios from 'axios'
 Vue.prototype.axios = axios
 axios.defaults.baseURL = '/api'
 
-Vue.config.productionTip = false;
+Vue.config.productionTip = false
 
-Vue.use(Element);
+Vue.use(Element)
 
 /* eslint-disable no-new */
 
