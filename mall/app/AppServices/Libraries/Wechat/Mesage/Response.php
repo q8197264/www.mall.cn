@@ -1,5 +1,5 @@
 <?php
-namespace Libraries\Wechat\Response;
+namespace Libraries\Wechat\Message;
 
 
 //实例化Wechat类

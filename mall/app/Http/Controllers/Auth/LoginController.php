@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -34,7 +35,7 @@ class LoginController extends Controller
     protected $redirectTo = '/home/index';
 
     protected static $auth;
-    protected $userService;
+    protected        $userService;
 
     /**
      * Create a new controller instance.
@@ -69,11 +70,9 @@ class LoginController extends Controller
     {
         //检测客户端
         if (true) {
-            //(new Wechat\Response\Response())->Index();exit;//微信服务器配置连接
-
             //微信授权登陆
             $this->wechatAuthLogin();
-        }else{
+        } else {
             //网站登录
             $this->webLogin();
         }
@@ -81,11 +80,11 @@ class LoginController extends Controller
 
     protected function wechatAuthLogin()
     {
-        static::$auth = new Wechat\Authorize();
+        $auth   = new Wechat\Authorize();
         $openid = session('openid');
         if (empty($openid)) {
-            static::$auth ->auth();
-            static::$auth ->getOpenid() && session()->put('openid', static::$auth ->getOpenid());
+            $auth->auth();
+            $auth->getOpenid() && session()->put('openid', $auth->getOpenid());
         }
 
         if (empty($openid)) {
@@ -93,16 +92,16 @@ class LoginController extends Controller
         }
         $userdata = $this->userService->checkLogin($openid, '', 'wechat');
         if ($userdata['code'] == 1) {
-            $userdata['uid'] = $this->userService->register(['identifier'=>$openid,'credential'=>'','grant_type'=>'wechat']);
+            $userdata['uid'] = $this->userService->register(['identifier' => $openid, 'credential' => '', 'grant_type' => 'wechat']);
         }
-        $userinfo = static::$auth ->getUserInfo($openid);
+        $userinfo = $auth->getUserInfo($openid);
         if (!empty($userinfo['nickname'])) {
             session()->put('user_id', $userdata['uid']);
             session()->put('nickname', $userinfo['nickname']);
-        }else {
+        } else {
             session()->forget('openid');
         }
-
+        echo session('user_id');
         return redirect('/home');
     }
 
@@ -124,7 +123,7 @@ class LoginController extends Controller
      */
     public function authenticate(Request $request)
     {
-        $user = Request(['uname','email','phone','password']);
+        $user     = Request(['uname', 'email', 'phone', 'password']);
         $username = array_shift($user);
         $password = array_shift($user);
 
@@ -147,7 +146,7 @@ class LoginController extends Controller
                 break;
         }
 
-        return view('auth.login',['res'=>$userdata]);
+        return view('auth.login', ['res' => $userdata]);
     }
 
     public function logout(Request $request)

@@ -3,6 +3,8 @@ namespace App\AppServices\Repositories\Comment;
 
 use App\AppServices\Models\CommentModel;
 use App\AppServices\Models\GoodsModel;
+use App\AppServices\Models\UserModel;
+use App\User;
 
 /**
  * Comment repository.
@@ -15,11 +17,13 @@ class CommentRepository
 {
     protected $commentModel;
     protected $goodsModel;
+    protected $userModel;
 
-    public function __construct(CommentModel $commentModel, GoodsModel $goodsModel)
+    public function __construct(CommentModel $commentModel, GoodsModel $goodsModel, UserModel $userModel)
     {
         $this->commentModel = $commentModel;
         $this->goodsModel   = $goodsModel;
+        $this->userModel = $userModel;
     }
 
     /**
@@ -55,23 +59,21 @@ class CommentRepository
         return $list;
     }
 
-    public function addOnlyComment(array $parameters):bool
+    public function add(array $parameters):int
     {
-        return $this->commentModel->addOnlyComment($parameters);
-    }
+        if (empty($parameters['comment'])) {
+            return 0;
+        }
+        $user = $this->userModel->queryUserByIndex(['id'=>$parameters['user_id']]);
+        $parameters['nickname'] = $user['nickname'];
 
-    /**
-     *  add comment images relate to comment
-     *
-     * @param int    $comment_id
-     * @param string $path
-     *
-     * @return bool
-     */
-    public function addCommentAndImage(array $parameters):bool
-    {
-        return $this->commentModel->addCommentAndImage($parameters);
-    }
+        if (empty($parameters['image_list'])) {
+            $id = $this->commentModel->addOnlyComment($parameters);
+        } else {
+            $id = $this->commentModel->addCommentAndImage($parameters);
+        }
 
+        return $id;
+    }
 
 }

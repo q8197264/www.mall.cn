@@ -61,6 +61,8 @@ Route::group(['prefix' => 'admin', 'namespace'=>'Admin'], function () {
 });
 
 
+Route::get('WechatServerFirstConnectingVerify', 'Frontend\WechatServerFirstConnectingVerify@index');
+
 //前端路由
     Auth::routes();
     Route::group(['namespace'=>'Auth'],function(){

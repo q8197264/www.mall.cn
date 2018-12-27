@@ -3,6 +3,7 @@ namespace App\AppServices\Services;
 
 use App\AppServices\Services\Comment\Comment;
 use App\AppServices\Services\Comment\Admin;
+use mysql_xdevapi\Exception;
 
 /**
  * Comment .
@@ -38,6 +39,12 @@ class CommentService
     public function save(array $parameters=[])
     {
         try{
+            if (empty($parameters['user_id'])) {
+                throw new \Exception('user should be login');
+            }
+            if (empty($parameters['comment'])) {
+                throw new \Exception('comment is null');
+            }
             $res = $this->comment->save($parameters);
         }catch(\Exception $e){
             $res['error'] = 1;

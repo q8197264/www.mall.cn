@@ -4,22 +4,12 @@ namespace App\AppServices\Models;
 
 use App\User;
 use Illuminate\Support\Facades\DB;
+use App\AppServices\Models\Common\Config;
+
 //use Illuminate\Database\Eloquent\Model;
-//use Illuminate\Database\Eloquent\Collection;
 
-class UserModel
+class UserModel extends Config
 {
-    protected $users      = 'users';
-    protected $user_auths = 'user_auths';
-
-    private $master;
-    private $slave;
-
-    public function __construct()
-    {
-        $this->master = DB::connection('mysql::write');
-        $this->slave  = DB::connection('mysql::read');
-    }
 
     public function queryUserByGrant(string $uname, string $grant_type):array
     {
@@ -51,9 +41,11 @@ EOF;
      */
     public function queryUserByIndex(array $wheres):array
     {
+        $args = [];
         $where  = '';
         foreach ($wheres as $k=>$v) {
-            $where .= ' u.`'.$k.'`=？ AND';
+            $where .= ' u.`'.$k.'`=? AND';
+            $args[] = $v;
         }
         $where = trim($where, 'AND');
         $sql = <<<EOF
@@ -61,18 +53,17 @@ EOF;
                 a.`uid`,
                 a.`grant_type`,
                 a.`credential`,
-                u.`nickname` 
+                u.`nickname`
             FROM
                 `{$this->user_auths}` a
                 INNER JOIN `{$this->users}` u ON a.`uid` = u.`id` 
             WHERE
                 {$where}
-                AND `unbind` = 0 
+                AND a.`unbind` = 0 
                 LIMIT 1
 EOF;
-        $args = array_values($wheres);
         $res = $this->slave->select($sql, $args);
-dd('test',$res);
+
         return (array) array_pop($res);
     }
 

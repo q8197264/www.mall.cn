@@ -33,28 +33,6 @@ class CommentController extends Controller
         $this->fileSystemService = $fileSystemService;
     }
 
-    public function test()
-    {
-        $jssdk = new JSSDK();
-        $config = $jssdk->GetSignPackage();
-
-        $list = $this->fileSystemService->listFile();
-
-        return view('frontend.comment.test',['list'=>$list,'config'=>$config]);
-    }
-
-    public function uptest(Request $request)
-    {
-        $media_id = $request->input('mediaIds');
-        $media_id = array_unique($media_id);
-        $comment_id = $request->input('cid');
-
-        // save 七牛 判断文件是否上传以及获取的文件是否是个有效的实例对象
-        $nil = $this->fileSystemService->uploadFile($media_id, $comment_id);//$request->file('image')
-
-        echo json_encode($nil);
-    }
-
     /**
      * kind of goods with different status
      */
@@ -92,8 +70,6 @@ class CommentController extends Controller
         $jssdk = new JSSDK();
         $config = $jssdk->GetSignPackage();
 
-        //$list = $this->fileSystemService->listFile();
-
         return view('frontend.comment.add',['list'=>$list, 'config'=>$config]);
     }
 
@@ -106,22 +82,22 @@ class CommentController extends Controller
      */
     public function add(Request $request)
     {
+        session()->put('user_id',77);
         $parameters['user_id'] = $this->isLogin();
         $media_ids = $request->input('mediaIds');
         if (!empty($media_ids) && is_array($media_ids)) {
             $parameters['media_ids'] = array_unique($media_ids);
         }
+        $parameters['order_no'] = $request->input('osn');
         $parameters['order_id'] = $request->input('oid');
         $parameters['sku_id'] = $request->input('kid');
-        $parameters['comment_content'] = $request->input('comment_content');
+        $parameters['spu_id'] = $request->input('sid');
+        $parameters['comment'] = $request->input('comment');
 
         $nil = $this->commentService->save($parameters);
 
         echo json_encode($nil);
     }
-
-
-
 
     /**
      * check user login status

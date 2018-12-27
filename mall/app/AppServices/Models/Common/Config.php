@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\DB;
  */
 abstract class Config
 {
+    protected $users      = 'users';
+    protected $user_auths = 'user_auths';
+
     public $goods_sku = 'goods_sku';
     public $goods_spu = 'goods_spu';
 

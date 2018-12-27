@@ -46,13 +46,13 @@ EOF;
      * query goods with wait comment
      *
      * @param int $order_id
-     * @param int $sku_id           指定商品 默认null 不指定
+     * @param int $sku_id 指定商品 默认null 不指定
      *
      * @return array
      */
     public function queryGoodsWithWaitComment(int $order_id, int $sku_id): array
     {
-        $sql  = <<<EOF
+        $sql   = <<<EOF
             SELECT 
                 g.`id`,
                 g.`order_id`,
@@ -87,6 +87,9 @@ EOF;
 
     public function addOnlyComment(array $parameters)
     {
+        if (empty($parameters['comment'])) {
+            return 0;
+        }
         $sql = <<<EOF
             insert into 
               `{$this->order_goods_comments}`(
@@ -102,11 +105,21 @@ EOF;
                   `created_at`,
                   `updated_at`
                 )value(
-                  ?,?,?,?,?,?,?,?,?,?,?
+                  ?,?,?,?,?,?,?,0,'',?,?
                 )
 EOF;
-dd($parameters);
-        $id = $this->master->insert($sql, [$order_id, $sku_id, $spu_id, $comment_content]);
+        $now = date('Y-m-d H:i:s', time());
+        $id  = $this->master->insert($sql, [
+            $parameters['order_no'],
+            $parameters['order_id'],
+            $parameters['spu_id'],
+            $parameters['sku_id'],
+            $parameters['user_id'],
+            $parameters['nickname'],
+            $parameters['comment'],
+            $now,
+            $now
+        ]);
 
         return $id;
     }
@@ -119,19 +132,35 @@ dd($parameters);
      *
      * @return mixed
      */
-    public function addCommentAndImage(int $comment_id, string $path):int
+    public function addCommentAndImage(array $parameters): int
     {
-        $sql = <<<EOF
-            INSERT INTO `{$this->order_goods_comment_images}` ( 
-              `comment_id`, 
-              `path`, 
-              `created_at`, 
-              `updated_at` 
-            ) VALUE
-                ( ?,?,?,? )
-EOF;
-        $now = date('Y-m-d H:i:s', time());
-        $id = $this->master->insert($sql, [$comment_id, $path, $now, $now]);
+        $id = $this->master->transaction(function () use ($parameters) {
+            $now = date('Y-m-d H:i:s', time());
+            $id  = $this->master->table($this->order_goods_comments)->insertGetId([
+                'order_no'   => $parameters['order_no'],
+                'order_id'   => $parameters['order_id'],
+                'spu_id'     => $parameters['spu_id'],
+                'sku_id'     => $parameters['sku_id'],
+                'user_id'    => $parameters['user_id'],
+                'nickname'   => $parameters['nickname'],
+                'comment'    => $parameters['comment'],
+                'source'     => 0,
+                'images'     => '',
+                'created_at' => $now,
+                'updated_at' => $now
+            ]);
+
+            foreach ($parameters['image_list'] as $path) {
+                $this->master->table($this->order_goods_comment_images)->insert([
+                    'comment_id' => $id,
+                    'path'       => $path,
+                    'created_at' => $now,
+                    'updated_at' => $now
+                ]);
+            }
+
+            return $id;
+        }, 2);
 
         return $id;
     }

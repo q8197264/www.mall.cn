@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-
     <div class="container">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
@@ -11,11 +10,11 @@
                         <div class="panel-body">
                             <img width="50" src="{{$goods->sku_images}}">
                             <div class="alert alert-success">
-                                {{--<form action="/comment" method="post">--}}
-{{--                                    {{csrf_field()}}--}}
                                 <textarea id="comment_content"></textarea>
                                 <input type="hidden" id="kid" value="{{$goods->sku_id}}">
                                 <input type="hidden" id="oid" value="{{$goods->order_id}}">
+                                <input type="hidden" id="osn" value="{{$goods->order_no}}">
+                                <input type="hidden" id="sid" value="{{$goods->spu_id}}">
                                 <div>
                                     <p>
                                         <span class="desc">上传图片</span>
@@ -36,15 +35,11 @@
                                     {{--</p>--}}
 
                                 </div>
-
-
-                                {{--</form>--}}
                             </div>
 
 
                         </div>
                     @endforeach
-
 
                 </div>
             </div>
@@ -55,7 +50,7 @@
         wx.config({
             // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，
             // 参数信息会通过log打出，仅在pc端时才会打印
-            debug: true,
+            debug: false,
             appId: "{{$config['appid']}}",
             timestamp: "{{$config['timestamp']}}",
             nonceStr: "{{$config['noncestr']}}",
@@ -122,7 +117,7 @@
                 }
             };
 
-            function uploadToWechat(){
+            function uploadToWechat() {
                 var i = 0, length = images.localId.length;
                 images.serverId = [];
 
@@ -156,6 +151,8 @@
                 var comment_content = document.querySelector('#comment_content').value;
                 var oid = document.querySelector('#oid').value;
                 var kid = document.querySelector('#kid').value;
+                var sid = document.querySelector('#sid').value;
+                var osn = document.querySelector('#osn').value;
 
                 $.ajax({
                     type: "post",
@@ -165,16 +162,20 @@
                     data: {
                         _token: "{{csrf_token()}}",
                         mediaIds: images.serverId,
-                        kid:kid,
-                        oid:oid,
-                        comment_content:comment_content,
+                        kid: kid,
+                        sid: sid,
+                        oid: oid,
+                        osn: osn,
+                        comment: comment_content,
                     },
-                    success: function (data) {
-                        alert(data);
-                        // for (var i in data) {
-                        //     alert(i);
-                        //     alert(data[i]);
-                        // }
+                    success: function (id) {
+                        alert(id);
+                        if (id>0) {
+                            //
+                            window.location.href='/home';
+                        }else{
+                            window.location.href='/fail';
+                        }
                     },
                     error: function (xhr, status, error) {
                         console.log("ajax error:", error);
