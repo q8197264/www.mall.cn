@@ -39,9 +39,11 @@ class OrderPaidQueue implements ShouldQueue
     public function handle()
     {
         //
-        $wechat = new Send();
+        $res = (new Send())
+            ->template('orderSuccess')
+            ->send(session('openid'),'ordersn','goodsname',4,5,'num','allmoney');
 
         //发微信模板
-        echo '订单支付成功...'.json_encode($this->message);
+        echo '订单支付成功...'.json_encode($this->message).' |message='.json_encode($res);
     }
 }

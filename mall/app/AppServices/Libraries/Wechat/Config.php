@@ -1,6 +1,7 @@
 <?php
-
 namespace Libraries\Wechat;
+
+use App\AppServices\Caches\Redis\Wechat\JssdkCache;
 
 /**
  * Wechat Config.
@@ -60,6 +61,12 @@ abstract class Config
 
     abstract protected function initialize();
 
+    //获取accesstoken
+    protected function getAccessToken(){
+
+        return JssdkCache::getToken();
+    }
+
     protected function httpGet($url)
     {
         $curl = curl_init();
@@ -84,6 +91,50 @@ abstract class Config
         return $res;
     }
 
+    /**
+     * 通过CURL发送数据
+     * @param $url 请求的URL地址
+     * @param $data 发送的数据
+     * return 请求结果
+     */
+    protected function curlPost($url,$data)
+    {
+        $ch = curl_init();
+        $params[CURLOPT_URL] = $url;    //请求url地址
+        $params[CURLOPT_HEADER] = FALSE; //是否返回响应头信息
+        $params[CURLOPT_SSL_VERIFYPEER] = false;
+        $params[CURLOPT_SSL_VERIFYHOST] = false;
+        $params[CURLOPT_RETURNTRANSFER] = true; //是否将结果返回
+        $params[CURLOPT_POST] = true;
+        $params[CURLOPT_POSTFIELDS] = $data;
+        curl_setopt_array($ch, $params); //传入curl参数
+        $res = curl_exec($ch); //执行
+        curl_close($ch); //关闭连接
+
+        return $res;
+    }
+
+    protected function httpFile(string $url, string $file)
+    {
+        $fp = fopen($file, "w");
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_FILE, $fp);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        $output = curl_exec($ch);
+        curl_close($ch);
+
+        fclose($fp);
+
+        return $output;
+    }
+
+    //----- 以下方法未使用 为参考
+    /**
+     * debug ...
+     *
+     * @return bool|string
+     */
     protected function httpPost()
     {
         $type  = "image";  //声明上传的素材类型，这里为image
@@ -111,20 +162,5 @@ abstract class Config
         curl_close($ch);//关闭会话
 
         return $output;//返回结果
-    }
-
-    protected function httpFile(string $url, string $file)
-    {
-        $fp = fopen($file, "w");
-
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_FILE, $fp);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        $output = curl_exec($ch);
-        curl_close($ch);
-
-        fclose($fp);
-
-        return $output;
     }
 }
