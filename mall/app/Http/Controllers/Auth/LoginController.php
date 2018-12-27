@@ -101,8 +101,10 @@ class LoginController extends Controller
         } else {
             session()->forget('openid');
         }
-        echo session('user_id');
-        return redirect('/home');
+        //echo session('user_id');
+
+        header("Location:/home");
+        //return redirect('/home');
     }
 
     protected function webLogin()

@@ -19,7 +19,7 @@
 .idea/vcs.xml
 .idea/vcs.xml
 pm2.txt
-client/
-www/
+client/node_modules
 sql/
+www/
 mall_admin/

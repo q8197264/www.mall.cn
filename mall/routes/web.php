@@ -78,6 +78,9 @@ Route::get('WechatServerFirstConnectingVerify', 'Frontend\WechatServerFirstConne
             Route::get('/', 'HomeController@index');
             Route::get('comment', 'CommentController@index');
         });
+
+
+
         Route::get('home', 'HomeController@index')->name('home');
 //购物车
         route::get('carts/{cid?}', 'CartsController@show')->name('carts.show');
@@ -128,6 +131,5 @@ Route::get('WechatServerFirstConnectingVerify', 'Frontend\WechatServerFirstConne
         route::post('comment', 'CommentController@add')->name('comment.add');
 
         //test
-        route::get('comment/test', 'CommentController@test')->name('comment.test');
-        route::post('comment/uptest', 'CommentController@uptest')->name('comment.uptest');
+        Route::get('test', 'HomeController@queueTest')->name('home.queueTest');
     });
