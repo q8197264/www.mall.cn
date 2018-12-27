@@ -84,11 +84,12 @@ class Order extends AbstractOrder
             $order['updated_at']    = $now;
 
             //add to order table
-            $order_res= $this->getOrderRepository()->builder($order, $goodsList);
-            $res[$shop_id]['order_id'] = $order_res['order_id'];
-            $res[$shop_id]['order_sn'] = $order_res['order_sn'];
+            $order_res                     = $this->getOrderRepository()->builder($order, $goodsList);
+            $res[$shop_id]['user_id']      = $user_id;
+            $res[$shop_id]['order_id']     = $order_res['order_id'];
+            $res[$shop_id]['order_sn']     = $order_res['order_sn'];
             $res[$shop_id]['order_amount'] = $order['order_amount'];
-            $res[$shop_id]['shop_name'] = $shop['shop']['shop_name'];
+            $res[$shop_id]['shop_name']    = $shop['shop']['shop_name'];
         }
 
         //删除购物车
@@ -109,7 +110,7 @@ class Order extends AbstractOrder
     protected function sendUserNotify(array $notifies)
     {
         //send message
-        foreach ($notifies as $k=>$v) {
+        foreach ($notifies as $k => $v) {
             event(new OrderPaid($v));
         }
     }
@@ -146,7 +147,7 @@ class Order extends AbstractOrder
      *
      * @return mixed
      */
-    public function getOrderRelateGoods(int $order_id, string $ordersn='')
+    public function getOrderRelateGoods(int $order_id, string $ordersn = '')
     {
         $list = $this->getOrderRepository()->getOrderRelateGoods($order_id);
 

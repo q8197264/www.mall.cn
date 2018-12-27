@@ -30,6 +30,6 @@ class SendOrderPaidNotify
     public function handle(OrderPaid $event)
     {
         //放入队列
-        dispatch(new OrderPaidQueue($event->order));
+        dispatch(new OrderPaidQueue($event));
     }
 }

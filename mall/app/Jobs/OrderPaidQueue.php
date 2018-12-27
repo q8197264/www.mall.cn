@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
@@ -14,17 +13,17 @@ class OrderPaidQueue implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $message;
+    protected $orderPaid;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($message)
+    public function __construct($orderPaid)
     {
         //
-        $this->message = $message;
+        $this->orderPaid = $orderPaid;
     }
 
     /**
@@ -38,12 +37,16 @@ class OrderPaidQueue implements ShouldQueue
      */
     public function handle()
     {
-        //
-        $res = (new Send())
-            ->template('orderSuccess')
-            ->send(session('openid'),'ordersn','goodsname',4,5,'num','allmoney');
-
         //发微信模板
-        echo '订单支付成功...'.json_encode($this->message).' |message='.json_encode($res);
+        try{
+            $res = (new Send)
+                ->template('orderSuccess')
+                ->send($this->orderPaid->orders['openid'],$this->orderPaid->orders['order_sn'],
+                    $this->orderPaid->orders['order_amount'],'货到付款');
+        }catch(\Exception $e){
+            echo $e->getMessage();
+        }
+
+        echo 'logger: 订单提交成功...'.json_encode($this->orderPaid->orders).''.json_encode($res);
     }
 }

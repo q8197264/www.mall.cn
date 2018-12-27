@@ -52,9 +52,15 @@ abstract class Config
 
     public function __construct()
     {
+        if (isset($_SERVER['HTTP_HOST'])) {
+            $this->redirect_uri = isset($_SERVER['SERVER_PROTOCOL'][0])
+                ?explode('/', $_SERVER['SERVER_PROTOCOL'])[0]
+                :'http' .'://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        }
 
-        $this->redirect_uri = explode('/', $_SERVER['SERVER_PROTOCOL'])[0] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-        $this->saverImageDir = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))).'/mall/public';
+
+        $this->saverImageDir = dirname(dirname(dirname(dirname(
+            dirname(dirname(__FILE__)))))).'/mall/public';
 
         $this->initialize();
     }

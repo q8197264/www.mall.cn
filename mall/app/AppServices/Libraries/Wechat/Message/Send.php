@@ -12,7 +12,6 @@ use Libraries\Wechat\Config;
  */
 class Send extends Config
 {
-    protected $token;
     protected $callTemplate;
 
     //请求模板消息的地址
@@ -21,7 +20,6 @@ class Send extends Config
     protected function initialize()
     {
         // TODO: Implement initialize() method.
-        $this->token = JssdkCache::getToken();
     }
 
     /**
@@ -46,7 +44,6 @@ class Send extends Config
     public function send()
     {
         $args = func_get_args();
-        dd($args);
 
         $template = call_user_func_array([new Template, $this->callTemplate], $args);
 

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
@@ -14,17 +13,19 @@ class OrderPaid
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $order;
+    public $orders;
+    public $openid;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($order)
+    public function __construct($orders)
     {
         //
-        $this->order = $order;
+        $this->orders = $orders;
+        $this->orders['openid'] = session('openid');
     }
 
     /**

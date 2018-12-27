@@ -89,41 +89,41 @@ class Template
      * goods_num:商品数量
      * allMoney:总价格
      */
-    public static function orderSuccess($openid = null, $orderSn = null, $goods_name = null, $goods_num = null, $allMoney = null)
+    public static function orderSuccess($openid, $orderSn, $amount, $paymode, $goods_name = null, $goods_num = null)
     {
         $template = [
             "touser"      => "$openid",
-            "template_id" => "JXhQjlGpNjVYB8irDEe_dmy-rdzhzrTQ8PrLZF5ADNw",
+            "template_id" => "GEMR6sQyRoMWFWZTCl9bRBmdnMC93ipK6KniFRstzYk",
             'url'         => '跳转地址',
             'topcolor'    => '#ccc',
             'data'        => [
-                'first'    => [
+                'tip'    => [
                     'value' => urlencode('亲，您的订单已创建成功，我们会立即为您备货，并在第一时间内为您安排专人免费送货到家！订单详情如下'),
                     'color' => "#743A3A",
                 ],
-                'keyword1' => [
+                'order_sn' => [
                     'value' => urlencode($orderSn),
-                    'color' => '#FF0000'
+//                    'color' => '#FF0000'
                 ],
-                'keyword2' => [
+                'goods_name' => [
                     'value' => urlencode($goods_name),
                     'color' => '#FF0000'
                 ],
-                'keyword3' => [
+                'goods_num' => [
                     'value' => urlencode($goods_num),
                     'color' => '#FF0000'
                 ],
-                'keyword4' => [
-                    'value' => urlencode($allMoney),
+                'amount' => [
+                    'value' => urlencode($amount),
                     'color' => '#FF0000'
                 ],
-                'keyword5' => [
-                    'value' => urlencode('货到付款'),
-                    'color' => '#FF0000'
+                'paymode' => [
+                    'value' => urlencode($paymode),
+//                    'color' => '#FF0000'
                 ],
                 'remark'   => [
                     'value' => urlencode('如果您对以上信息有任何疑问，请直接在平台上回复您的问题即可，或拨打客服电话4001021789。再次感谢您的惠顾！'),
-                    'color' => '#FF0000'
+//                    'color' => '#FF0000'
                 ],
             ]
         ];

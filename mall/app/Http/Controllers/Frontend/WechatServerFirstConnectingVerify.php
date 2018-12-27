@@ -8,7 +8,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use Libraries\Wechat\Response\Response;
+use Libraries\Wechat\Message\Response;
 
 class WechatServerFirstConnectingVerify
 {
