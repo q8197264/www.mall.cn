@@ -42,11 +42,8 @@ class HomeController extends Controller
         if (session('user_id')!=77) {
             return ;
         }
-        $res['user_id']      = session('user_id');
-        $res['order_id']     = 123;
-        $res['order_sn']     = 3232323;
-        $res['order_amount'] = 240.99;
-        $res['shop_name']    = 'nonnono';
+        $res['order_sn']     = 'test';
+        $res['order_amount'] = 250.99;
         event(new OrderPaid($res));
     }
 }

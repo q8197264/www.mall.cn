@@ -31,7 +31,7 @@ class AdministratorModel
      *
      * @return array
      */
-    public function queryAdministratorById(int $id):array
+    public function queryById(int $id):array
     {
         $sql = <<<EOF
             SELECT 
@@ -53,7 +53,7 @@ EOF;
      *
      * @return array
      */
-    public function queryAdministratorByName(string $uname):array
+    public function queryByName(string $uname):array
     {
         $sql = <<<EOF
             SELECT 
@@ -75,7 +75,7 @@ EOF;
      *
      * @return array
      */
-    public function queryAdministratorByEmail(string $email):array
+    public function queryByEmail(string $email):array
     {
         $sql = <<<EOF
             SELECT 
@@ -97,7 +97,7 @@ EOF;
      *
      * @return array
      */
-    public function queryAdministratorByPhone(int $phone):array
+    public function queryByPhone(int $phone):array
     {
         $sql = <<<EOF
             SELECT 
@@ -120,7 +120,7 @@ EOF;
      *
      * @return array
      */
-    public function queryAdministratorList(int $offset, int $limit):array
+    public function queryList(int $offset, int $limit):array
     {
         $sql = <<<EOF
             SELECT
@@ -151,7 +151,7 @@ EOF;
      *
      * @return mixed
      */
-    public function addAdministrator(string $uname, string $password):bool
+    public function add(string $uname, string $password):bool
     {
         $sql = <<<EOF
             INSERT INTO `{$this->admins}`(
@@ -174,7 +174,7 @@ EOF;
      *
      * @return mixed
      */
-    public function delAdministrator(int $id):bool
+    public function delById(int $id):bool
     {
         $sql = <<<EOF
             DELETE FROM `{$this->admins}` WHERE `id`=?
@@ -189,7 +189,7 @@ EOF;
      *
      * @param array $data
      */
-    public function editAdministrator(array $data):bool
+    public function editById(array $data):bool
     {
         $set = '';
         $res = [];

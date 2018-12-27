@@ -11,7 +11,6 @@ function objectToArray($object) :array
         print_r($v);
         return (array) $v;
     });
-//print_r($object);
 
     return $array;
 }

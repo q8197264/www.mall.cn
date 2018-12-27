@@ -34,8 +34,7 @@ class LoginController extends Controller
      */
     protected $redirectTo = '/home/index';
 
-    protected static $auth;
-    protected        $userService;
+    protected $userService;
 
     /**
      * Create a new controller instance.
@@ -47,18 +46,9 @@ class LoginController extends Controller
         $this->middleware('guest', ['except' => 'logout']);
         $this->userService = $userService;
     }
-
-    /**
-     * 重写验证时使用的用户名字段
-     */
     public function username()
     {
         return 'username';
-    }
-
-    protected function redirectTo()
-    {
-        return $this->redirectTo;
     }
 
     /**
@@ -66,22 +56,46 @@ class LoginController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    function index()
+    public function showLoginForm()
     {
         //检测客户端
-        if (true) {
+        if ($this->is_weixin()) {
             //微信授权登陆
             $this->wechatAuthLogin();
         } else {
-            //网站登录
-            $this->webLogin();
+            //网站帐号登录
+            $this->islogin();
         }
+    }
+    /**
+     * web login
+     *
+     * @return
+     */
+    protected function islogin()
+    {
+        if (session()->has('user_id')) {
+            return redirect()->route('home');
+        }
+
+        return view('auth.login');
+    }
+
+
+    protected function is_weixin()
+    {
+        if ( strpos($_SERVER['HTTP_USER_AGENT'],'MicroMessenger') !== false ) {
+            return true;
+        }
+
+        return false;
     }
 
     protected function wechatAuthLogin()
     {
         $auth   = new Wechat\Authorize();
         $openid = session('openid');
+
         if (empty($openid)) {
             $auth->auth();
             $auth->getOpenid() && session()->put('openid', $auth->getOpenid());
@@ -101,20 +115,11 @@ class LoginController extends Controller
         } else {
             session()->forget('openid');
         }
-        //echo session('user_id');
 
-        header("Location:/home");
-        //return redirect('/home');
+        return redirect('/home');
     }
 
-    protected function webLogin()
-    {
-        if (!empty(session('user_id'))) {
-            return redirect()->route('home');
-        }
 
-        return view('auth.login');
-    }
 
     /**
      * custom-made user login
@@ -123,7 +128,7 @@ class LoginController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function authenticate(Request $request)
+    public function login(Request $request)
     {
         $user     = Request(['uname', 'email', 'phone', 'password']);
         $username = array_shift($user);

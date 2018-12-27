@@ -29,19 +29,19 @@ class AdministratorRepository extends AbstractRepository
      *
      * @return array
      */
-    public function queryAdministratorByFactory(string $uname):array
+    public function queryByIdentifier(string $uname):array
     {
         $user = self::checkUserType($uname);
         switch (key($user))
         {
             case 'phone':
-                $user = $this->administratorModel->queryAdministratorByPhone(current($user));
+                $user = $this->administratorModel->queryByPhone(current($user));
                 break;
             case 'username':
-                $user = $this->administratorModel->queryAdministratorByName(current($user));
+                $user = $this->administratorModel->queryByName(current($user));
                 break;
             case 'email':
-                $user = $this->administratorModel->queryAdministratorByEmail(current($user));
+                $user = $this->administratorModel->queryByEmail(current($user));
                 break;
             default:
         }
@@ -49,9 +49,9 @@ class AdministratorRepository extends AbstractRepository
         return $user;
     }
 
-    public function queryAdministratorList(int $offset, int $limit)
+    public function queryList(int $offset, int $limit)
     {
-        return $this->administratorModel->queryAdministratorList($offset, $limit);
+        return $this->administratorModel->queryList($offset, $limit);
     }
 
     /**
@@ -61,9 +61,9 @@ class AdministratorRepository extends AbstractRepository
      *
      * @return array
      */
-    public function queryAdministratorById(int $id)
+    public function queryById(int $id)
     {
-        $user = $this->administratorModel->queryAdministratorById($id);
+        $user = $this->administratorModel->queryById($id);
 
         return $user;
     }
@@ -75,11 +75,11 @@ class AdministratorRepository extends AbstractRepository
      *
      * @return bool|mixed
      */
-    public function addAdministrator(string $uname, string $password)
+    public function add(string $uname, string $password)
     {
-        $info = $this->administratorModel->queryAdministratorByName($uname);
+        $info = $this->administratorModel->queryByName($uname);
         if (empty($info)) {
-            $b = $this->administratorModel->addAdministrator($uname, $password);
+            $b = $this->administratorModel->add($uname, $password);
         }
 
         return $b??false;
@@ -92,9 +92,9 @@ class AdministratorRepository extends AbstractRepository
      *
      * @return bool
      */
-    public function delAdministrator(int $id):bool
+    public function del(int $id):bool
     {
-        return $this->administratorModel->delAdministrator($id);
+        return $this->administratorModel->delById($id);
     }
 
     /**
@@ -104,8 +104,8 @@ class AdministratorRepository extends AbstractRepository
      *
      * @return mixed
      */
-    public function editAdministrator(array $data)
+    public function edit(array $data)
     {
-        return $this->administratorModel->editAdministrator($data);
+        return $this->administratorModel->editById($data);
     }
 }

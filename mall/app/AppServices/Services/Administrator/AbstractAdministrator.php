@@ -11,12 +11,13 @@ use Illuminate\Container\Container as App;
  */
 abstract class AbstractAdministrator
 {
-    protected static $userRespository;
+    protected static $administratorRepository;
 
     final function __construct(App $app)
     {
-        if (empty(static::getUserRespository())) {
-            static::$userRespository = $app->make('App\AppServices\Repositories\Administrator\AdministratorRepository');
+        if (empty(static::getAdministratorRespository())) {
+            static::$administratorRepository = $app
+                ->make('App\AppServices\Repositories\Administrator\AdministratorRepository');
         }
 
         $this->initialize();
@@ -29,9 +30,9 @@ abstract class AbstractAdministrator
      *
      * @return mixed
      */
-    protected static function getUserRespository()
+    protected static function getAdministratorRespository()
     {
-        return static::$userRespository;
+        return static::$administratorRepository;
     }
 
     /**
@@ -43,7 +44,7 @@ abstract class AbstractAdministrator
      */
     public function checkUser(string $uname)
     {
-        return static::getUserRespository()->queryUserByName($uname);
+        return static::getAdministratorRespository()->queryUserByName($uname);
     }
 
     /**
@@ -58,7 +59,7 @@ abstract class AbstractAdministrator
         //1.判重
         //2.帐号检测
 //        if ($this->checkUser($data['uname'])) {
-            $b = static::getUserRespository()->createUser($data);
+            $b = static::getAdministratorRespository()->createUser($data);
 //        }
 
         return $b??false;

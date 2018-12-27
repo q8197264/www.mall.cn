@@ -61,25 +61,30 @@ Route::group(['prefix' => 'admin', 'namespace'=>'Admin'], function () {
 });
 
 
-Route::get('WechatServerFirstConnectingVerify', 'Frontend\WechatServerFirstConnectingVerify@index');
+//test
+    Route::get('WechatServerFirstConnectingVerify', 'Frontend\WechatServerFirstConnectingVerify@index');
+    Route::get('test', 'Frontend\HomeController@queueTest')->name('home.test');
 
-//前端路由
-    Auth::routes();
-    Route::group(['namespace'=>'Auth'],function(){
-        Route::get('login', 'LoginController@index')->name('login');
-        Route::post('login', 'LoginController@authenticate');
-        Route::post('logout', 'LoginController@logout');
-        Route::post('register', 'RegisterController@register');
+/**
+ * -------- 前端路由 ---------|
+ *                           |
+ * -------- 前端路由 ---------|
+ */
+Auth::routes();
+//    Route::group(['namespace'=>'Auth'],function(){
+//        Route::get('login', 'LoginController@index')->name('login');
+//        Route::post('login', 'LoginController@authenticate');
+//        Route::post('logout', 'LoginController@logout');
+//        Route::post('register', 'RegisterController@register');
 
-    });
+//    });
+
 
     Route::group(['namespace'=>'Frontend'], function(){
         Route::group(['middleware' => 'auth'], function () {
             Route::get('/', 'HomeController@index');
             Route::get('comment', 'CommentController@index');
         });
-
-
 
         Route::get('home', 'HomeController@index')->name('home');
 //购物车
@@ -129,7 +134,4 @@ Route::get('WechatServerFirstConnectingVerify', 'Frontend\WechatServerFirstConne
         route::get('comment/{oid}/order/{kid}/todo', 'CommentController@todo')->name('comment.todo');
         route::get('comment/{oid}/todo', 'CommentController@todo')->name('comment.todo');
         route::post('comment', 'CommentController@add')->name('comment.add');
-
-        //test
-        Route::get('test', 'HomeController@queueTest')->name('home.queueTest');
     });

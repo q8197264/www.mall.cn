@@ -80,8 +80,13 @@ EOF;
         $args = [];
         foreach ($data as $v) {
             $where[] = '(`grant_type` =? AND `identifier` =?)';
-            $args[] = $v['grant_type'];
-            $args[] = $v['identifier'];
+            if (is_array($v)) {
+                $args[] = $v['grant_type'];
+                $args[] = $v['identifier'];
+            } else {
+                $args[] = $data['grant_type'];
+                $args[] = $data['identifier'];
+            }
         }
         $where = implode($where,' OR ');
         $sql = <<<EOF

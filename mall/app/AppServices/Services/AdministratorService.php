@@ -45,7 +45,7 @@ class AdministratorService
      */
     public function checkLogin(string $uname, string $password)
     {
-        $info = $this->admin->getAdministratorInfo($uname);
+        $info = $this->admin->getByIdentifier($uname);
         if (empty($info['password'])) {
             $code = 1;//no exists
         } elseif ( password_verify($password, $info['password']) ) {
@@ -67,7 +67,7 @@ class AdministratorService
      */
     public function list(int $offset, int $limit)
     {
-        return $this->admin->queryAdministratorList($offset, $limit);
+        return $this->admin->getList($offset, $limit);
     }
 
     /**
@@ -79,7 +79,7 @@ class AdministratorService
      */
     public function show(int $id)
     {
-        $info = $this->admin->queryAdministratorById($id);
+        $info = $this->admin->getById($id);
 
         return $info;
     }
@@ -95,7 +95,7 @@ class AdministratorService
     {
         $password = $this->encrypt($password);
         var_dump($password);
-        return $this->admin->addAdministrator($uname, $password);
+        return $this->admin->add($uname, $password);
     }
 
     /**
@@ -107,7 +107,7 @@ class AdministratorService
      */
     public function delete(int $id):bool
     {
-        return $this->admin->delAdministrator($id);
+        return $this->admin->del($id);
     }
 
     /**
@@ -119,6 +119,6 @@ class AdministratorService
      */
     public function edit(array $data)
     {
-        return $this->admin->editAdministrator($data);
+        return $this->admin->edit($data);
     }
 }

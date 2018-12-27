@@ -28,6 +28,8 @@ class OrderPaidQueue implements ShouldQueue
 
     /**
      * 注：
+     * php artisan queue:work rabbitmq  --daemon --quiet --queue=default --delay=3 --sleep=3 --tries=5
+     *
      * 消费端：在命令终端启用命令：php artisan queue:work [可选]--queue=queueName 常驻进程
      * 生产者：用dispath函数发送任务：dispatch(new OrderPaidQueue());
      *
@@ -47,6 +49,6 @@ class OrderPaidQueue implements ShouldQueue
             echo $e->getMessage();
         }
 
-        echo 'logger: 订单提交成功...'.json_encode($this->orderPaid->orders).''.json_encode($res);
+        echo 'logger: 订单提交成功...'.json_encode($this->orderPaid->orders).''.json_encode($res)."\n";
     }
 }

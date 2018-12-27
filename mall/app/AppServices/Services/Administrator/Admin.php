@@ -12,9 +12,9 @@ class Admin extends AbstractAdministrator
 {
     protected function initialize() {}
 
-    public function queryUserById(int $uid=0)
+    public function getById(int $uid=0)
     {
-        return static::getUserRespository()->queryUserById($uid);
+        return static::getAdministratorRespository()->queryById($uid);
     }
 
     /**
@@ -24,9 +24,9 @@ class Admin extends AbstractAdministrator
      *
      * @return array
      */
-    public function getAdministratorInfo(string $uname): array
+    public function getByIdentifier(string $uname): array
     {
-        $user = $this->getUserRespository()->queryAdministratorByFactory($uname);
+        $user = $this->getAdministratorRespository()->queryByIdentifier($uname);
 
         return $user;
     }
@@ -39,15 +39,15 @@ class Admin extends AbstractAdministrator
      *
      * @return mixed
      */
-    public function getUserList(int $offset, int $limit)
+    public function getList(int $offset, int $limit)
     {
-        $list = $this->getUserRespository()->queryUsersList($offset, $limit);
+        $list = $this->getAdministratorRespository()->queryList($offset, $limit);
 
         return $list;
     }
 
-    public function softDelete(int $uid)
+    public function del(int $uid)
     {
-        return $this->getUserRespository()->softDelete($uid);
+        return $this->getAdministratorRespository()->del($uid);
     }
 }
