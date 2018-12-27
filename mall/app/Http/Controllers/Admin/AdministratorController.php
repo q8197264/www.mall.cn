@@ -47,8 +47,8 @@ class AdministratorController extends Controller
     public function list(int $offset = 0)
     {
         $list = $this->administratorService->list($offset, 10);
-        echo '<pre>';
-        print_r($list);
+
+        echo json_encode($list);
     }
 
     /**

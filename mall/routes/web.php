@@ -1,4 +1,8 @@
 <?php
+//test
+Route::get('WechatServerFirstConnectingVerify', 'Frontend\WechatServerFirstConnectingVerify@index');
+Route::get('test', 'Frontend\HomeController@queueTest')->name('home.test');
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,6 +21,7 @@ Route::group(['prefix' => 'admin', 'namespace'=>'Admin'], function () {
     Route::get('login', 'LoginController@showLoginForm')->name('admin.login');
     Route::post('login', 'LoginController@authenticate');
     Route::post('logout', 'LoginController@logout');
+    Route::post('register', 'RegisterController@register');
 
     route::get('index', 'IndexController@index')->name('index.index');
 
@@ -58,12 +63,11 @@ Route::group(['prefix' => 'admin', 'namespace'=>'Admin'], function () {
     route::post('orders', 'OrdersController@register')->name('orders.register');
     route::put('orders', 'OrdersController@edit')->name('orders.edit');
     route::delete('orders', 'OrdersController@delete')->name('orders.delete');
+
+    //销售报表管理
+    route::get('report/{offset?}', 'ReportController@list')->name('report.list');
+    route::post('report', 'ReportController@export')->name('report.export');
 });
-
-
-//test
-    Route::get('WechatServerFirstConnectingVerify', 'Frontend\WechatServerFirstConnectingVerify@index');
-    Route::get('test', 'Frontend\HomeController@queueTest')->name('home.test');
 
 /**
  * -------- 前端路由 ---------|
