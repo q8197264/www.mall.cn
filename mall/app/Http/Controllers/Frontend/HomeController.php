@@ -6,6 +6,7 @@ use App\AppServices\Services\GoodsService;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\UserProvider;
 
+use App\Events\OrderPaid;
 /**
  * Created by PhpStorm.
  * User: Administrator
@@ -32,5 +33,20 @@ class HomeController extends Controller
         return view('frontend.home', ['data'=>$list]);
     }
 
-
+    /**
+     * debug 测试队列程序 （）
+     *
+     */
+    public function queueTest()
+    {
+        if (session('user_id')!=77) {
+            return ;
+        }
+        $res['user_id']      = session('user_id');
+        $res['order_id']     = 123;
+        $res['order_sn']     = 3232323;
+        $res['order_amount'] = 240.99;
+        $res['shop_name']    = 'nonnono';
+        event(new OrderPaid($res));
+    }
 }

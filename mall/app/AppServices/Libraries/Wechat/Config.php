@@ -2,6 +2,7 @@
 namespace Libraries\Wechat;
 
 use App\AppServices\Caches\Redis\Wechat\JssdkCache;
+use Libraries\Wechat\Jssdk\JSSDK;
 
 /**
  * Wechat Config.
@@ -68,9 +69,20 @@ abstract class Config
     abstract protected function initialize();
 
     //获取accesstoken
-    protected function getAccessToken(){
+    protected function getAccessToken()
+    {
+        // access_token 应该全局存储与更新，以下代码以写入到文件中做示例
+        $access_token = JssdkCache::getToken();
+        if (empty($access_token)) {
+            $url = str_replace(['{APPID}', '{SECRET}'], [$this->appid, $this->secret], $this->getAccessTokenUrl);
+            $res = json_decode($this->httpGet($url));
+            if (isset($res->access_token)) {
+                $access_token = $res->access_token;
+                JssdkCache::saveToken($access_token);
+            }
+        }
 
-        return JssdkCache::getToken();
+        return $access_token;
     }
 
     protected function httpGet($url)
