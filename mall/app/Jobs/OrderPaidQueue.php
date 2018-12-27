@@ -8,7 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-use Libraries\Wechat\Response\Response;
+use Libraries\Wechat\Message\Send;
 
 class OrderPaidQueue implements ShouldQueue
 {
@@ -39,7 +39,7 @@ class OrderPaidQueue implements ShouldQueue
     public function handle()
     {
         //
-        $wechat = new Response();
+        $wechat = new Send();
 
         //发微信模板
         echo '订单支付成功...'.json_encode($this->message);
