@@ -19,7 +19,7 @@
                                 最低价格：{{$data['low_price']}}
                             </p>
                             分类:{{$data['category_name']}}
-                                @foreach ($data['sku'] as $sku_id=>$sku)
+                                @foreach ($data['sku']??array() as $sku_id=>$sku)
                                     @foreach ($sku['spec'] as $spec)
                                         <div>{{$spec->spec_name}}:{{$spec->spec_value}}</div>
                                     @endforeach
