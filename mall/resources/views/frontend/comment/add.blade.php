@@ -172,7 +172,7 @@
                         alert(id);
                         if (id>0) {
                             //
-                            window.location.href='/home';
+                            window.location.href='/goods/'+sid+'/show';
                         }else{
                             window.location.href='/fail';
                         }
