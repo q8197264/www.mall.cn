@@ -1,7 +1,7 @@
 <?php
 namespace Services\Report\Common;
 
-
+use ReflectionClass;
 /**
  * proxy mode.
  *
@@ -25,10 +25,10 @@ class Action
         $args = func_get_args();
 
         echo 'action=export';
-        $reflect =new \ReflectionClass('Export');
-        $export = $reflect->NewInstanceArags($this->config);
-dd(1);
-        return call_user_func_array([$export,'export']);
+        $reflect =new ReflectionClass(Export::class);
+        $export = $reflect->newInstanceArgs($args);
+
+        return $export;
     }
 
     public function import()

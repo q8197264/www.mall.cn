@@ -17,10 +17,6 @@ class Services
 
     public function __construct() {}
 
-    //$obj->export()->excel()->save();
-
-
-
     public function __call($action='export', $argument)
     {
 
@@ -29,7 +25,7 @@ class Services
 //        dd($called);
 //        $resolve = explode('\\', $called);
 //        dd($resolve);
-//        new ;
+
         return call_user_func_array([new $this->config['Action'], $action], $argument);
     }
 }

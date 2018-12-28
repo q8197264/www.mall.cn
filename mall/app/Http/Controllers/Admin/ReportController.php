@@ -47,9 +47,9 @@ class ReportController extends Controller
      */
     public function list(int $offset = 0)
     {
-        $res = $this->services->export('2018-09-12 10:30:3','2019-09-10 10:20:12');
-//            ->excel('style')
-//            ->save('/www/www.mall.cn/mall/storage/');
+        $res = $this->services->export('2018-09-12 10:30:3','2019-09-10 10:20:12')
+            ->excel('style')
+            ->save('/www/www.mall.cn/mall/storage/');
 
         dd($res);
 

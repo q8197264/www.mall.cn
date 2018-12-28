@@ -13,19 +13,20 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class Excel
 {
-    public function __construct($d, $e, $f, $g)
+    public function __construct($d, $e=null, $f=null, $g=null)
     {
-        var_dump(func_get_args());
     }
 
     public function export(string $path)
     {
+        $path.='hello_world.xlsx';
+
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setCellValue('A1', 'Welcome to Helloweba.');
 
         $writer = new Xlsx($spreadsheet);
-        $writer->save('/www/www.mall.cn/mall/storage/hello.xlsx');
+        $writer->save($path);
 
         return 'success';
     }

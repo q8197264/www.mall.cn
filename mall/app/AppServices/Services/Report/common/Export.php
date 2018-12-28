@@ -8,17 +8,23 @@
 
 namespace Services\Report\common;
 
+use ReflectionClass;
 
 class Export
 {
-    public function __construct($a, $b, $c)
+    private $format = [
+        'excel'=> \Services\Report\Excel::class,
+        'csv'=>\Services\Report\CSV::class,
+    ];
+
+    public function __construct($from='', $to='', $chunk=null)
     {
-        var_dump($a,$b,$c);
     }
 
     public function save(string $path=null)
     {
-        $res = call_user_func([$this->obj,'export'], $path);
+
+        $res = call_user_func([$this->target,'export'], $path);
 
         echo $path;
         return $res;
@@ -26,9 +32,8 @@ class Export
 
     public function __call($classname, $arguments)
     {
-
-        $reflect = ReflectionClass($classname);
-        $this->obj = $reflect->NewInstanceArgs($arguments);
+        $reflect = new ReflectionClass($this->format[$classname]);
+        $this->target = $reflect->newInstanceArgs($arguments);
 
         return $this;
     }

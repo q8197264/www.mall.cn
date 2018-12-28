@@ -322,7 +322,8 @@ EOF;
 EOF;
         $res = $this->slave->select($sql,[$brand_id]);
 
-        return array_pop($res)->brand_name;
+        $brand_name = empty($res)?'其它':array_pop($res)->brand_name;
+        return $brand_name;
     }
 
     /**
