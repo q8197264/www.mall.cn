@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Services\Services;
 
 /**
  * Created by PhpStorm.
@@ -15,8 +14,12 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
  */
 class ReportController extends Controller
 {
-    public function __construct()
-    { }
+
+
+    public function __construct(Services $services)
+    {
+        $this->services = $services;
+    }
 
     /**
      * export excel file
@@ -44,12 +47,11 @@ class ReportController extends Controller
      */
     public function list(int $offset = 0)
     {
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setCellValue('A1', 'Welcome to Helloweba.');
+        $res = $this->services->export('2018-09-12 10:30:3','2019-09-10 10:20:12');
+//            ->excel('style')
+//            ->save('/www/www.mall.cn/mall/storage/');
 
-        $writer = new Xlsx($spreadsheet);
-        $writer->save('/www/www.mall.cn/mall/storage/hello.xlsx');
+        dd($res);
 
         echo 'list';
     }

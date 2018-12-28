@@ -116,7 +116,8 @@ class LoginController extends Controller
             session()->forget('openid');
         }
 
-        return redirect('/home');
+        header('Location:/home');
+//        return redirect('/home');
     }
 
 
