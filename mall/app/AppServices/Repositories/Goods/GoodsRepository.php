@@ -21,14 +21,14 @@ class GoodsRepository
         $this->categoryModel = $categoryModel;
     }
 
-    /**
-     * TODO: 获取指定商品base信息 (未完成 )
-     * get designated goods info
-     *
-     * @param int $gid
-     *
-     * @return array
-     */
+//    /**
+//     * TODO: 获取指定商品base信息 (未完成 )
+//     * get designated goods info
+//     *
+//     * @param int $gid
+//     *
+//     * @return array
+//     */
 //    public function queryGoodsById(int $gid):array
 //    {
 //        $res = $this->goodsModel->queryGoodsSpuById($gid);

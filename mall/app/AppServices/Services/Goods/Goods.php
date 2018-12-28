@@ -13,4 +13,5 @@ class Goods extends AbstractGoods
     {
         // TODO: Implement initialize() method.
     }
+
 }

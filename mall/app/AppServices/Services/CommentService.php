@@ -81,4 +81,12 @@ class CommentService
         return $list;
     }
 
+    public function getCommentWithGoods(int $spu_id, int $sku_id, int $shop_id=0)
+    {
+        $list = $this->comment->getCommentWithGoods($spu_id, $sku_id, $shop_id);
+
+
+        return $list;
+    }
+
 }

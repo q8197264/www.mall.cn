@@ -43,8 +43,25 @@
                                 @endforeach
 
                         </div>
+
+
                     @endif
                 </div>
+                <div>
+                    <h5>商品评论</h5>
+                    @foreach ($data['sku'] as $sku_id=>$sku)
+                        {{$sku['sku_name']}}
+                        @foreach ($sku['comments'] as $comment)
+                            {{$comment['comment']}}
+                            <p>用户晒图</p>
+                            @foreach ($comment['images'] as $k=>$image)
+                               <img width="50" src="{{config('filesystems.disks.qiniu.domain').'/'.$image}}" >
+                            @endforeach
+                        @endforeach
+                    @endforeach
+
+                </div>
+
             </div>
         </div>
     </div>

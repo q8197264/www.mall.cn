@@ -76,4 +76,16 @@ class CommentRepository
         return $id;
     }
 
+    public function queryCommentWithGoods(int $spu_id, int $sku_id, int $shop_id=0)
+    {
+        $rows = $this->commentModel->queryCommentWithGoods($spu_id, $sku_id, $shop_id);
+        $list = [];
+        foreach ($rows as $row) {
+            $list[$row->sku_id] = (array) $row;
+            $list[$row->sku_id]['images'] = explode(',',$row->path);
+        }
+
+        return $list;
+    }
+
 }

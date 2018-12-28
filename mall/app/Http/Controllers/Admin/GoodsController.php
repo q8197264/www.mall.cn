@@ -30,6 +30,7 @@ class GoodsController extends Controller
     public function show(int $gid=0)
     {
         $data = $this->goodsService->info($gid);
+
         echo json_encode($data);
     }
 

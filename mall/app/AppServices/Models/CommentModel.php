@@ -85,6 +85,29 @@ EOF;
         return $rows;
     }
 
+    public function queryCommentWithGoods(int $spu_id, int $sku_id, int $shop_id=0)
+    {
+        $sql = <<<EOF
+            SELECT
+                GROUP_CONCAT( m.path ) as `path`,
+                c.spu_id,
+                c.sku_id,
+                c.`comment`,
+                c.user_id 
+            FROM
+                `order_goods_comments` c
+                LEFT JOIN `order_goods_comment_images` m ON c.id = m.comment_id 
+            WHERE
+                c.spu_id = ? 
+                AND c.sku_id = ? 
+            GROUP BY
+                c.sku_id
+EOF;
+        $rows = $this->slave->select($sql, [$spu_id, $sku_id]);
+
+        return $rows;
+    }
+
     public function addOnlyComment(array $parameters)
     {
         if (empty($parameters['comment'])) {

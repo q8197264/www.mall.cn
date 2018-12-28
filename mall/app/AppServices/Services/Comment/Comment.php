@@ -37,6 +37,20 @@ class Comment extends AbstractComment
     }
 
     /**
+     * @param int $spu_id
+     * @param int $sku_id
+     * @param int $shop_id
+     *
+     * @return mixed
+     */
+    public function getCommentWithGoods(int $spu_id, int $sku_id, int $shop_id=0)
+    {
+        $rows = $this->getCommentRepository()->queryCommentWithGoods($spu_id, $sku_id, $shop_id);
+
+        return $rows;
+    }
+
+    /**
      * add comoment
      *
      * @param array $parameters
@@ -56,4 +70,6 @@ class Comment extends AbstractComment
 
         return $id;
     }
+
+
 }
