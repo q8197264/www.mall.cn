@@ -52,7 +52,7 @@ class GoodsRepository
         if (!empty($res)) {
             $res['brand_name'] = $this->goodsModel->queryGoodsBrandById($res['brand_id']);
             $category = $this->categoryModel->queryCategoryById($res['category_id']);
-            $res['category_name'] = $category['category_name'];
+            $res['category_name'] = $category['category_name']??'';
         }
 
         return $res;
