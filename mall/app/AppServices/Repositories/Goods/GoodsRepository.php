@@ -114,7 +114,7 @@ class GoodsRepository
         $list = $this->goodsModel->queryGoodsList($offset, $limit);
         foreach ($list as $k=>$row) {
             $list[$k]->brand_name  = $this->goodsModel->queryGoodsBrandById($row->brand_id);
-            $list[$k]->shop_name   = $this->goodsModel->queryGoodsShopById($row->shop_id)['shop_name'];
+            $list[$k]->shop_name   = $this->goodsModel->queryGoodsShopById($row->shop_id)['shop_name']??'其它';
         }
 
         return $list;
