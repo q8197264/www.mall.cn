@@ -102,6 +102,7 @@ class LoginController extends Controller
         }
 
         if (empty($openid)) {
+            header('Location:/login');
             return redirect('/login');
         }
         $userdata = $this->userService->checkLogin($openid, '', 'wechat');

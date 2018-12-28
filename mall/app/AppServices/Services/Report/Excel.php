@@ -1,16 +1,15 @@
 <?php
+namespace Services\Report;
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 /**
  * Created by PhpStorm.
  * User: sai
  * Date: 2018-12-28
  * Time: 01:04
  */
-
-namespace Services\Report;
-
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-
 class Excel
 {
     public function __construct($d, $e=null, $f=null, $g=null)

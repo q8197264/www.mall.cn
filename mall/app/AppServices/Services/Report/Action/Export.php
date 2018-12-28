@@ -6,7 +6,7 @@
  * Time: 12:12
  */
 
-namespace Services\Report\common;
+namespace Services\Report\Action;
 
 use ReflectionClass;
 
@@ -21,8 +21,13 @@ class Export
     {
     }
 
+    public function export(){
+
+    }
+
     public function save(string $path=null)
     {
+        //select db
 
         $res = call_user_func([$this->target,'export'], $path);
 

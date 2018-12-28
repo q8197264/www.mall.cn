@@ -1,7 +1,8 @@
 <?php
-namespace Services\Report\Common;
+namespace Services\Report\Action;
 
 use ReflectionClass;
+
 /**
  * proxy mode.
  *
@@ -9,7 +10,6 @@ use ReflectionClass;
  * Date: 2018-12-28
  * Time: 12:13
  */
-
 class Action
 {
     protected $config;
@@ -19,12 +19,10 @@ class Action
         $this->config = [];
     }
 
-    //export(array)->excel
     public function export(string $start, string $end)
     {
         $args = func_get_args();
 
-        echo 'action=export';
         $reflect =new ReflectionClass(Export::class);
         $export = $reflect->newInstanceArgs($args);
 
@@ -38,9 +36,10 @@ class Action
         return $this;
     }
 
+
     public function __call($classname, $arguments=null)
     {
-        // TODO: Implement __call() method.
+        dd($classname, $arguments);
 
         //类构造函数接收不定量参数:如 new Excel(...) 类
         $reflect = new ReflectionClass($classname);

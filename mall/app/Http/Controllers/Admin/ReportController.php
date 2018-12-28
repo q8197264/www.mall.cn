@@ -28,25 +28,6 @@ class ReportController extends Controller
      */
     public function export(Request $request)
     {
-        $begin = $request->input('begin');
-        $end = $request->input('end');
-
-
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setCellValue('A1', 'Welcome to Helloweba.');
-
-        $writer = new Xlsx($spreadsheet);
-        $writer->save('hello.xlsx');
-
-        dd('ok');
-    }
-
-    /**
-     * @param int $offset
-     */
-    public function list(int $offset = 0)
-    {
         $res = $this->services->export('2018-09-12 10:30:3','2019-09-10 10:20:12')
             ->excel('style')
             ->save('/www/www.mall.cn/mall/storage/');
@@ -54,5 +35,14 @@ class ReportController extends Controller
         dd($res);
 
         echo 'list';
+    }
+
+    /**
+     * @param int $offset
+     */
+    public function list(int $offset = 0)
+    {
+        //$this->services->report()->export()->excel()->save();
+        $this->services->excel();
     }
 }
