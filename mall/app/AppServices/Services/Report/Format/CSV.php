@@ -6,10 +6,13 @@
  * Time: 13:20
  */
 
-namespace Services\Report;
+namespace Services\Report\Format;
 
 
 class CSV
 {
-
+    public function import()
+    {
+        echo 'import';
+    }
 }

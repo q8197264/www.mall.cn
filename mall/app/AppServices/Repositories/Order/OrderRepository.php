@@ -72,4 +72,12 @@ class OrderRepository
 
         return $list;
     }
+
+
+    public function getSales(string $start, string $end)
+    {
+        $list = $this->orderModel->querySales($start, $end);
+
+        return $list;
+    }
 }

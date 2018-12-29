@@ -1,10 +1,11 @@
 <?php
+
 namespace Services\Report;
 
 use Exception;
-use Services\Report\AbstractBase\AbstractCall;
+use Services\SERProxy\AbstractCall;
+use App\AppServices\Repositories\Order\OrderRepository;
 
-use Repositories;
 /**
  * Created by PhpStorm.
  * User: sai
@@ -13,15 +14,24 @@ use Repositories;
  */
 class Report extends AbstractCall
 {
-    //实现连贯操作
-    const ActionNamespace = 'Services\Report\Action';
+    //连贯操作时指向下一个类
+    static $ActionNamespace = 'Services\Report\Action';
 
-    public function __construct()
+    protected $orderRepository;
+
+
+    public function __construct(OrderRepository $orderRepository)
     {
+        $this->orderRepository = $orderRepository;
     }
 
     public function show()
     {
         dd('show');
+    }
+
+    public function fetch()
+    {
+        return $this;
     }
 }

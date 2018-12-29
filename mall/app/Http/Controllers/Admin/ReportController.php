@@ -28,21 +28,30 @@ class ReportController extends Controller
      */
     public function export(Request $request)
     {
-        $res = $this->services->export('2018-09-12 10:30:3','2019-09-10 10:20:12')
-            ->excel('style')
-            ->save('/www/www.mall.cn/mall/storage/');
 
-        dd($res);
+        //告诉浏览器输出07Excel文件
+//        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+//        //header('Content-Type:application/vnd.ms-excel');//告诉浏览器将要输出Excel03版本文件
+//        header('Content-Disposition: attachment;filename="01simple.xlsx"');//告诉浏览器输出浏览器名称
+//        header('Cache-Control: max-age=0');//禁止缓存
 
-        echo 'list';
+        $path = '/www/www.mall.cn/mall/storage/';
+        $data = $this->services->report()->export()->fetch('2018-12-22 12:21:25','2018-12-27 10:22:50')
+            ->excel()->save($path);
+        echo '报表保存路径:'.$path;
+        dd($data);
     }
 
     /**
+     * show sales
+     *
      * @param int $offset
      */
     public function list(int $offset = 0)
     {
-        //$this->services->report()->export()->excel()->save();
-        $this->services->excel();
+        $data = $this->services->report()->export()->fetch('2018-12-22 12:21:25','2018-12-27 10:22:50')->data;
+//            ->excel()->save('/www/www.mall.cn/mall/storage/');
+//        dd($res);
+        return view('admin.report.report', ['data'=>$data]);
     }
 }

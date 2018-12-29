@@ -51,7 +51,7 @@ class LoginController extends Controller
      */
     public function showLoginForm(Request $request)
     {
-        echo $request->session()->get('user_id');
+        $request->session()->get('user_id');
         //echo $request->session()->get('username');
 
         return view('admin.login');

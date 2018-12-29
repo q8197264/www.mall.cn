@@ -111,4 +111,26 @@ EOF;
 
         return $rows;
     }
+
+
+    public function querySales(string $start, string $end)
+    {
+        $sql = <<<EOF
+            SELECT
+                o.`id`,
+                o.`order_no`,
+                k.`sku_name`,
+                sum(g.`number`) as `number`   
+            FROM
+                `{$this->order_info}` o
+                LEFT JOIN `{$this->order_goods}` g ON o.`id` = g.`order_id`
+                INNER JOIN `{$this->goods_sku}` k ON g.`sku_id` = k.`id` 
+            WHERE
+                o.`created_at` BETWEEN ? AND ? GROUP BY g.sku_id
+EOF;
+
+        $rows = $this->slave->select($sql, [$start, $end]);
+
+        return $rows;
+    }
 }
